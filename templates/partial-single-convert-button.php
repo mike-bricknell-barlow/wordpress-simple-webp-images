@@ -1,4 +1,4 @@
-<span class="setting">
+<span class="setting convert-image-setting">
     <span class="name">Simple Webp Images</span>
     <span class="value" style="width: 60%;">
         <a href="#" id="swi-convert-single-image">

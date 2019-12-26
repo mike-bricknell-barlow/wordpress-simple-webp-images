@@ -1,6 +1,28 @@
 ( function ( $ ) {
     $( document ).ready( function () {
-        setTimeout( function () {
+        window.ajaxrunning = false;
+        
+        if($('body').hasClass('post-type-attachment')) {
+            $(document).on( 'DOMSubtreeModified', '.media-frame-content', function () {
+                if( $('.convert-image-setting').length === 0 )
+                    loadConvertLink();
+            } );
+
+            $(document).on( 'click', '.attachment', function () {
+                if( $('.convert-image-setting').length === 0 )
+                    loadConvertLink();
+            } );
+        }
+
+        $(document).on( 'click', '#swi-convert-single-image', function (e) {
+            e.preventDefault();
+            convertSingleImage();
+        } );
+    });
+
+    function loadConvertLink () {
+        if(!window.ajaxrunning) {
+            window.ajaxrunning = true;
             $.ajax( {
                 'url': ajaxurl,
                 'data': {
@@ -9,15 +31,11 @@
                 'type': 'POST',
                 'success': function( response ) {
                     $( '.settings' ).append( response );
+                    window.ajaxrunning = false;
                 },
             } );
-        }, 500 );
-
-        $(document).on( 'click', '#swi-convert-single-image', function (e) {
-            e.preventDefault();
-            convertSingleImage();
-        } );
-    });
+        }
+    }
 
     function convertSingleImage () {
         var urlParams = new URLSearchParams(window.location.search);
