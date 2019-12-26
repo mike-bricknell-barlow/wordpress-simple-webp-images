@@ -14,6 +14,8 @@
 */
 
 require 'classes/class-simple-webp-images.php';
+require 'classes/class-simple-webp-images-html.php';
 use SimpleWebpImages;
 
-$simple_webp_images = new SimpleWebpImages\Simple_Webp_Images();
+$simple_webp_images = new SimpleWebpImages\Simple_Webp_Images_HTML();
+new SimpleWebpImages\Simple_Webp_Images();
