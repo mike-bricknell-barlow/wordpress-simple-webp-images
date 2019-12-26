@@ -36,6 +36,10 @@ class Simple_Webp_Images {
             case 'image/jpeg':
                 $image = imagecreatefromjpeg( $filename );
                 break;
+
+            case 'image/png':
+                $image = imagecreatefrompng( $filename );
+                break;
         }
 
         if ( !$image ) {
