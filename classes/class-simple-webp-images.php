@@ -68,7 +68,9 @@ class Simple_Webp_Images {
             return false;
         }
 
-        $created = imagewebp( $image, $filename . '.webp', 80 );
+        $quality = ( $set_qual = get_option( 'simple-webp-images-conversion-quality' ) ) ? $set_qual : 80;
+
+        $created = imagewebp( $image, $filename . '.webp', $quality );
 
         return $created;
     }
