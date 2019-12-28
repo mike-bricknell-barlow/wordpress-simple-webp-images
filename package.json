@@ -2,7 +2,7 @@
     "name": "simple-webp-images",
     "version": "1.0.0",
     "scripts": {
-        "build-sass": "sass assets/styles/main.scss dist/styles/main.css --style compressed",
+        "build-sass": "sass assets/styles/admin-styles.scss dist/styles/admin-styles.css --style compressed",
         "build-js": "./node_modules/uglify-js/bin/uglifyjs assets/scripts/admin-scripts.js --compress --mangle --output dist/scripts/admin-scripts.js",
         "build": "yarn build-sass && yarn build-js"
     },

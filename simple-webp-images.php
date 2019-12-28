@@ -17,6 +17,7 @@ require 'classes/class-simple-webp-images.php';
 require 'classes/class-simple-webp-images-html.php';
 require 'classes/class-simple-webp-images-admin.php';
 
-$simple_webp_images = new SimpleWebpImages\Simple_Webp_Images_HTML();
-new SimpleWebpImages\Simple_Webp_Images();
-new SimpleWebpImages\Simple_Webp_Images_Admin();
+global $simple_webp_images;
+new Simple_Webp_Images_HTML();
+$simple_webp_images = new Simple_Webp_Images();
+new Simple_Webp_Images_Admin();

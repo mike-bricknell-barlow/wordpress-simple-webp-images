@@ -1,7 +1,5 @@
 <?php
 
-namespace SimpleWebpImages;
-
 class Simple_Webp_Images {
     private $version = '1.0.0';
     private $plugin_url;
@@ -22,18 +20,8 @@ class Simple_Webp_Images {
         add_filter( 'wp_generate_attachment_metadata', array( $this, 'generate_webp_on_resize' ), 10, 2 );
         
         add_action( 'init', array( $this, 'set_plugin_url' ) );
-        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
         add_action( 'delete_attachment', array( $this, 'delete_webp_on_media_deletion' ) );
         add_action( 'wp_ajax_convert_single_attachment', array( $this, 'convert_single_attachment' ) );
-    }
-
-    public function enqueue_admin_assets () {
-        wp_enqueue_script(
-            'simple-webp-images-admin-scripts',
-            $this->get_plugin_url() . '/dist/scripts/admin-scripts.js',
-            ['jquery'],
-            $this->version
-        );
     }
 
     public function generate_webp_on_resize ( $metadata, $attachment_id ) {
@@ -88,7 +76,18 @@ class Simple_Webp_Images {
     }
 
     public function convert_single_attachment () {
-        $attachment_id = $_POST['attachment_id'];
+        $created = $this->convert_single_attachment_by_attachment_id( $_POST['attachment_id'] );
+        
+        if( $created ) {
+            echo 'Success!';
+            wp_die();
+        } 
+       
+        echo 'Failure.';
+        wp_die();
+    }
+
+    public function convert_single_attachment_by_attachment_id ($attachment_id) {
         $attachment_meta = get_post_meta ( $attachment_id, '_wp_attachment_metadata', true );
         $file_path_arr = explode( '/', $attachment_meta['file'] );
         
@@ -101,13 +100,6 @@ class Simple_Webp_Images {
         }
 
         $created = $this->generate_webp( wp_get_upload_dir()['basedir'] . '/' . $attachment_meta['file'], $mime_type );
-
-        if( $created ) {
-            echo 'Success!';
-            wp_die();
-        } 
-       
-        echo 'Failure.';
-        wp_die();
+        return $created;
     }
 }

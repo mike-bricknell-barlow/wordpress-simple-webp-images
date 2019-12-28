@@ -1,7 +1,5 @@
 <?php
 
-namespace SimpleWebpImages;
-
 class Simple_Webp_Images_HTML {
     function __construct() {
         $this->hooks_and_filters();

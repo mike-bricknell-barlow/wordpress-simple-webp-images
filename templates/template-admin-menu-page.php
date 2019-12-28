@@ -27,5 +27,23 @@
             </tbody>
         </table>   
         <?php submit_button(); ?> 
+
+        <hr />
+        <h2>Bulk Convert</h2>
+
+        <p>Use the button below to convert all images in the media library, including the resized versions, to .wepb.</p>
+        <p>If you've changed the quality settings above, you will need to run the bulk conversion to generate images with the new quality setting.</p>
+
+        <button class="button button-primary" id="start-bulk-conversion">
+            Start bulk conversion
+        </button>
+
+        <p class="hidden step step-2">Counting images...</p>
+
+        <p class="hidden step step-3">Images converted: <span id="remaining-images">0</span>/<span id="total-images"></span></p>
+    
+        <p class="hidden step step-3 converting">Images are now being converted. Please leave this browser window open until the conversion has completed.</p>
+    
+        <p class="hidden step step-4">Bulk conversion is now complete.</p>
     </form>
 </div>

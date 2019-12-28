@@ -1,24 +1,33 @@
 ( function ( $ ) {
     $( document ).ready( function () {
         window.ajaxrunning = false;
-        
-        if($('body').hasClass('post-type-attachment')) {
-            $(document).on( 'DOMSubtreeModified', '.media-frame-content', function () {
-                if( $('.convert-image-setting').length === 0 )
-                    loadConvertLink();
-            } );
 
-            $(document).on( 'click', '.attachment', function () {
-                if( $('.convert-image-setting').length === 0 )
-                    loadConvertLink();
-            } );
+        if($('body').hasClass('post-type-attachment')) { 
+            onLoadElements();
         }
 
         $(document).on( 'click', '#swi-convert-single-image', function (e) {
             e.preventDefault();
             convertSingleImage();
         } );
+
+        $(document).on( 'click', '#start-bulk-conversion', function (e) {
+            e.preventDefault();
+            checkImageAmount();
+        } );
     });
+
+    function onLoadElements () {
+        $(document).on( 'DOMSubtreeModified', '.media-frame-content', function () {
+            if( $('.convert-image-setting').length === 0 )
+                loadConvertLink();
+        } );
+
+        $(document).on( 'click', '.attachment', function () {
+            if( $('.convert-image-setting').length === 0 )
+                loadConvertLink();
+        } );
+    }
 
     function loadConvertLink () {
         if(!window.ajaxrunning) {
@@ -49,8 +58,66 @@
             },
             'type': 'POST',
             'success': function( response ) {
-                console.log( response );
+                if ( response === "Success!" ) {
+                    $ ( '#swi-convert-single-image' ).text( 'Converted!' );
+                }
             },
         } );
+    }
+
+    function checkImageAmount () {
+        $( '#start-bulk-conversion' ).slideUp();
+        $( '.step-2' ).slideDown();
+
+        $.ajax( {
+            'type': 'POST',
+            'url': ajaxurl,
+            'data': {
+                'action': 'get_total_images',
+            },
+            'success': function ( response ) {
+                $( '.step-2' ).slideUp();
+                $( '#total-images' ).text( response );
+                $( '.step-3' ).slideDown();
+                window.bulkConvertRunning = false;
+                window.bulkConvertPage = 1;
+                bulkConvertImages();
+            }
+        } );
+    }
+
+    function bulkConvertImages () {
+        setInterval( function () {
+            if( window.bulkConvertRunning === false ) {
+                window.bulkConvertRunning = true;
+
+                $.ajax( {
+                    'type': 'POST',
+                    'url': ajaxurl,
+                    'data': {
+                        'action': 'bulk_convert_images',
+                        'paged': window.bulkConvertPage,
+                    },
+                    'success': function ( response ) {
+                        if( response === "All done" ) {
+                            $( '.converting' ).slideUp();
+                            $( '.step-4' ).slideDown();
+                            return false;
+                        } 
+                        
+                        var totalImages = parseInt( $( '#total-images' ).text() );
+                        var processedImages = parseInt(response);
+                        
+                        if ( processedImages > totalImages ) {
+                            processedImages = totalImages;
+                        }
+
+                        $( '#remaining-images' ).text( processedImages );
+                        window.bulkConvertRunning = false;
+                        window.bulkConvertPage = parseInt(window.bulkConvertPage) + 1;
+                    },
+                } );
+            }
+        }, 100 );
     }
 } ) ( jQuery );
