@@ -29,7 +29,7 @@ class Simple_Webp_Images {
         $mime_type = false;
 
         foreach( $metadata['sizes'] as $size ) {
-            $filepath = wp_get_upload_dir()['path'] . '/' . $size['file'];
+            $filepath = wp_get_upload_dir()['basedir'] . '/' . $file_path_arr[0] . '/' . $file_path_arr[1] . '/' . $size['file'];
             $mime_type = $size['mime-type'];
             $this->generate_webp( $filepath, $mime_type );
         }
@@ -68,7 +68,7 @@ class Simple_Webp_Images {
         
         $file_path_arr = explode( '/', $attachment_meta['file'] );
         foreach( $attachment_meta['sizes'] as $size ) {
-            $filepath = wp_get_upload_dir()['path'] . '/' . $size['file'] . '.webp';
+            $filepath = wp_get_upload_dir()['basedir'] . '/' . $file_path_arr[0] . '/' . $file_path_arr[1] . '/' . $size['file'];
             unlink( $filepath );
         }
 
@@ -94,7 +94,7 @@ class Simple_Webp_Images {
         $mime_type = false;
         $created = false;
         foreach( $attachment_meta['sizes'] as $size ) {
-            $filepath = wp_get_upload_dir()['path'] . '/' . $size['file'];
+            $filepath = wp_get_upload_dir()['basedir'] . '/' . $file_path_arr[0] . '/' . $file_path_arr[1] . '/' . $size['file'];
             $mime_type = $size['mime-type'];
             $this->generate_webp( $filepath, $mime_type );
         }
