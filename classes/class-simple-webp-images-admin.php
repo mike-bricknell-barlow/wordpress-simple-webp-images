@@ -1,7 +1,7 @@
 <?php
 
 class Simple_Webp_Images_Admin {
-    private $version = '1.0.0';
+    private $version = SIMPLE_WEBP_IMAGES_VERSION;
     private $plugin_url;
     
     function __construct () {
@@ -9,7 +9,7 @@ class Simple_Webp_Images_Admin {
     }
 
     public function set_plugin_url () {
-        $this->plugin_url = get_home_url() . '/wp-content/plugins/simple-webp-images';
+        $this->plugin_url = SIMPLE_WEBP_IMAGES_PLUGIN_DIR_URL;
     }
 
     public function get_plugin_url () {
@@ -29,14 +29,14 @@ class Simple_Webp_Images_Admin {
     public function enqueue_admin_assets () {
         wp_enqueue_script (
             'simple-webp-images-admin-scripts',
-            $this->get_plugin_url() . '/dist/scripts/admin-scripts.js',
+            $this->get_plugin_url() . 'dist/scripts/admin-scripts.js',
             array( 'jquery' ),
             $this->version
         );
 
         wp_enqueue_style(
             'simple-webp-images-admin-styles',
-            $this->get_plugin_url() . '/dist/styles/admin-styles.css',
+            $this->get_plugin_url() . 'dist/styles/admin-styles.css',
             array(),
             $this->version
         );

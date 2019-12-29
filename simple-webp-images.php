@@ -13,6 +13,9 @@
  * Text Domain:       simple-webp-images
 */
 
+define('SIMPLE_WEBP_IMAGES_VERSION', '1.0.1');
+define('SIMPLE_WEBP_IMAGES_PLUGIN_DIR_URL', plugin_dir_url(__FILE__));
+
 require 'classes/class-simple-webp-images.php';
 require 'classes/class-simple-webp-images-html.php';
 require 'classes/class-simple-webp-images-admin.php';
