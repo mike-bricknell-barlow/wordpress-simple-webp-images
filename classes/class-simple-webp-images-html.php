@@ -12,7 +12,7 @@ class Simple_Webp_Images_HTML {
     }
 
     public function output_single_convert_link () {
-        include ABSPATH . '/wp-content/plugins/simple-webp-images/templates/partial-single-convert-button.php';
+        include SIMPLE_WEBP_IMAGES_PLUGIN_DIR_PATH . '/templates/partial-single-convert-button.php';
         wp_die();
     }
 
