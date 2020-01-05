@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "scripts": {
         "build-sass": "sass assets/styles/admin-styles.scss dist/styles/admin-styles.css --style compressed",
-        "build-js": "./node_modules/uglify-js/bin/uglifyjs assets/scripts/admin-scripts.js --compress --mangle --output dist/scripts/admin-scripts.js",
+        "build-js": "./node_modules/uglify-js/bin/uglifyjs assets/scripts/admin-scripts.js --compress --mangle --output dist/scripts/admin-scripts.js && ./node_modules/uglify-js/bin/uglifyjs assets/scripts/public-scripts.js --compress --mangle --output dist/scripts/public-scripts.js",
         "build": "yarn build-sass && yarn build-js",
         "build-zip": "cd ../ && zip -r simple-webp-images.zip simple-webp-images -x \"./simple-webp-images/node_modules/*\" -x \"./simple-webp-images/.sass-cache/*\" -x \"./simple-webp-images/.git/*\" && cd simple-webp-images"
     },
