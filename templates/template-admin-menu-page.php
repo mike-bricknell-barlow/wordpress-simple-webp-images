@@ -1,7 +1,7 @@
 <div class="wrap">
     <h1>Simple Webp Images - Settings</h1>
 
-    <form method="post" action="/wp-admin/admin-post.php"> 
+    <form method="post" action="<?php echo admin_url ( 'admin-post.php' ) ?>"> 
         <?php settings_fields( 'simple-webp-images-options-group' ); ?>
         <input type="hidden" name="action" value="update_settings">
         <table class="form-table">
