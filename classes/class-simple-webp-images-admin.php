@@ -77,7 +77,13 @@ class Simple_Webp_Images_Admin {
                 'label' => 'Conversion Quality (%)',
                 'type' => 'text',
                 'id' => 'simple-webp-images-conversion-quality',
-                'value' => get_option('simple-webp-images-conversion-quality')
+                'value' => get_option ( 'simple-webp-images-conversion-quality' )
+            ),
+            array ( 
+                'label' => 'Enable Lazy-Loading',
+                'type' => 'checkbox',
+                'id' => 'simple-webp-images-lazy-loading',
+                'value' => get_option ( 'simple-webp-images-lazy-loading' )
             ),
         );
     }
@@ -86,9 +92,13 @@ class Simple_Webp_Images_Admin {
         $fields = $this->get_options_fields();
 
         foreach ( $fields as $field ) {
-            if( isset( $_POST[$field['id']] ) ) {
+            if ( isset( $_POST[$field['id']] ) ) {
                 update_option( $field['id'], $_POST[$field['id']] );
             }
+
+            if ( $field['type'] == 'checkbox' && ! isset ( $_POST[$field['id']] ) ) {
+                update_option( $field['id'], 'off' );
+            } 
         }
 
         wp_redirect( $_SERVER["HTTP_REFERER"] );

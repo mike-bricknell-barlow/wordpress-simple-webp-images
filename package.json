@@ -8,6 +8,7 @@
         "build-zip": "cd ../ && zip -r simple-webp-images.zip simple-webp-images -x \"./simple-webp-images/node_modules/*\" -x \"./simple-webp-images/.sass-cache/*\" -x \"./simple-webp-images/.git/*\" && cd simple-webp-images"
     },
     "dependencies": {
-        "uglify-js": "^3.7.2"
+        "uglify-js": "^3.7.2",
+        "vanilla-lazyload": "^12.4.0"
     }
 }

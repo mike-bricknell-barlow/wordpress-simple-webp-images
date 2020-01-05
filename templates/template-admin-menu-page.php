@@ -19,6 +19,15 @@
 
                                 <?php
                                 break;
+
+                            case 'checkbox':
+                                ?>
+
+                                <th><label for="<?php echo $field['id'] ?>"><?php echo $field['label'] ?></label></th>
+                                <td><input type="checkbox" id="<?php echo $field['id'] ?>" name="<?php echo $field['id'] ?>" <?php echo ( $field['value'] == 'on' ) ? 'checked="checked"' : '' ?> /></td>
+
+                                <?php
+                                break;
                         }
                     echo '</tr>';
                 }

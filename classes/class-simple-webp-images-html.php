@@ -8,6 +8,7 @@ class Simple_Webp_Images_HTML {
     private function hooks_and_filters () {
         add_action( 'wp_ajax_output_single_convert_link', array ( $this, 'output_single_convert_link' ) );
         add_action( 'template_redirect', array ( $this, 'start_html_buffer' ), 0 );
+	    add_action( 'wp_enqueue_scripts', array ( $this, 'enqueue_assets' ) );
 
         add_filter( 'wp_get_attachment_image_attributes', array( $this, 'add_id_attribute_to_image_tags' ), 10, 3 );
         add_filter( 'the_content', array ( $this, 'wrap_img_tags_with_picture_element' ), 20 );
@@ -134,16 +135,16 @@ class Simple_Webp_Images_HTML {
         $size_string = $this->generate_sizes_string ( $src_set );
         
         $webp_src_set = $src_set;
-        $webp_src_set = str_replace( '.jpg', '.jpg.webp', $webp_src_set );
-        $webp_src_set = str_replace( '.png', '.png.webp', $webp_src_set );
+        $webp_src_set = str_replace ( '.jpg', '.jpg.webp', $webp_src_set );
+        $webp_src_set = str_replace ( '.png', '.png.webp', $webp_src_set );
 
         $img_type = false;
         switch ( $img_tag ) {
-            case strpos( $img_tag, '.jpg' ) !== FALSE:
+            case strpos ( $img_tag, '.jpg' ) !== FALSE:
                 $img_type = 'image/jpg';
                 break;
 
-            case strpos( $img_tag, '.png' ) !== FALSE:
+            case strpos ( $img_tag, '.png' ) !== FALSE:
                 $img_type = 'image/png';
                 break;
         }
@@ -164,17 +165,23 @@ class Simple_Webp_Images_HTML {
         return $new_img_tag;
     }
 
-    private function appendHTML(DOMNode $parent, $source) {
+    private function appendHTML ( DOMNode $parent, $source ) {
         $tmpDoc = new DOMDocument();
         $tmpDoc->loadHTML($source);
-        foreach ($tmpDoc->getElementsByTagName('body')->item(0)->childNodes as $node) {
-            $node = $parent->ownerDocument->importNode($node, true);
-            $parent->appendChild($node);
+        foreach ( $tmpDoc->getElementsByTagName( 'body' )->item( 0 )->childNodes as $node ) {
+            $node = $parent->ownerDocument->importNode ( $node, true );
+            $parent->appendChild ( $node );
         }
     }
 
     public function add_id_attribute_to_image_tags ( $attr, $attachment, $size ) {
         $attr['data-attachmentid'] = $attachment->ID;
         return $attr;
+    }
+
+    public function enqueue_assets () {
+        if ( get_option ( 'simple-webp-images-lazy-loading' ) == 'on' ) {
+            wp_enqueue_script ( 'lazyload-scripts', SIMPLE_WEBP_IMAGES_PLUGIN_DIR_URL . 'assets/scripts/lazyload.min.js', array(), $this->version, true );
+        }
     }
 }
