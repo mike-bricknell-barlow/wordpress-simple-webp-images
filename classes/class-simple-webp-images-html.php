@@ -8,6 +8,7 @@ class Simple_Webp_Images_HTML {
     private function hooks_and_filters () {
         add_action( 'wp_ajax_output_single_convert_link', array ( $this, 'output_single_convert_link' ) );
         add_action( 'template_redirect', array ( $this, 'start_html_buffer' ), 0 );
+	    add_action( 'wp_enqueue_scripts', array ( $this, 'enqueue_assets' ) );
 
         add_filter( 'wp_get_attachment_image_attributes', array( $this, 'add_id_attribute_to_image_tags' ), 10, 3 );
         add_filter( 'the_content', array ( $this, 'wrap_img_tags_with_picture_element' ), 20 );
@@ -134,28 +135,39 @@ class Simple_Webp_Images_HTML {
         $size_string = $this->generate_sizes_string ( $src_set );
         
         $webp_src_set = $src_set;
-        $webp_src_set = str_replace( '.jpg', '.jpg.webp', $webp_src_set );
-        $webp_src_set = str_replace( '.png', '.png.webp', $webp_src_set );
+        $webp_src_set = str_replace ( '.jpg', '.jpg.webp', $webp_src_set );
+        $webp_src_set = str_replace ( '.png', '.png.webp', $webp_src_set );
 
         $img_type = false;
         switch ( $img_tag ) {
-            case strpos( $img_tag, '.jpg' ) !== FALSE:
+            case strpos ( $img_tag, '.jpg' ) !== FALSE:
                 $img_type = 'image/jpg';
                 break;
 
-            case strpos( $img_tag, '.png' ) !== FALSE:
+            case strpos ( $img_tag, '.png' ) !== FALSE:
                 $img_type = 'image/png';
                 break;
         }
         
         $new_img_tag = '<picture class="' . $classes . '">';
+
+        $src_set_title = 'srcset';
+        $sizes_title = 'sizes';
+
+        if ( $this->is_lazy_loading_enabled () ) {
+            $src_set_title = 'data-srcset';
+            $sizes_title = 'data-sizes';
+
+            $img_tag = str_replace ( 'src', 'data-src', $img_tag );
+            $img_tag = str_replace ( 'class="', 'class="lazy ', $img_tag );
+        }
         
         if ( $webp_src_set ) {
-            $new_img_tag .= '<source srcset="' . $webp_src_set . '" sizes="' . $size_string . '" type="image/webp">';
+            $new_img_tag .= '<source ' . $src_set_title . '="' . $webp_src_set . '" ' . $sizes_title . '="' . $size_string . '" type="image/webp">';
         }
 
         if ( $img_type && $src_set ) {
-            $new_img_tag .= '<source srcset="' . $src_set . '" sizes="' . $size_string . '" type="' . $img_type . '">';
+            $new_img_tag .= '<source ' . $src_set_title . '="' . $src_set . '" ' . $sizes_title . '="' . $size_string . '" type="' . $img_type . '">';
         }
             
         $new_img_tag .= $img_tag;
@@ -164,17 +176,32 @@ class Simple_Webp_Images_HTML {
         return $new_img_tag;
     }
 
-    private function appendHTML(DOMNode $parent, $source) {
+    private function appendHTML ( DOMNode $parent, $source ) {
         $tmpDoc = new DOMDocument();
         $tmpDoc->loadHTML($source);
-        foreach ($tmpDoc->getElementsByTagName('body')->item(0)->childNodes as $node) {
-            $node = $parent->ownerDocument->importNode($node, true);
-            $parent->appendChild($node);
+        foreach ( $tmpDoc->getElementsByTagName( 'body' )->item( 0 )->childNodes as $node ) {
+            $node = $parent->ownerDocument->importNode ( $node, true );
+            $parent->appendChild ( $node );
         }
     }
 
     public function add_id_attribute_to_image_tags ( $attr, $attachment, $size ) {
         $attr['data-attachmentid'] = $attachment->ID;
         return $attr;
+    }
+
+    public function enqueue_assets () {
+        if ( $this->is_lazy_loading_enabled () ) {
+            wp_enqueue_script ( 'lazyload-scripts', SIMPLE_WEBP_IMAGES_PLUGIN_DIR_URL . 'assets/scripts/lazyload.min.js', array (), $this->version, true );
+            wp_enqueue_script ( 'swi-public-scripts', SIMPLE_WEBP_IMAGES_PLUGIN_DIR_URL . 'dist/scripts/public-scripts.js', array ( 'lazyload-scripts' ), $this->version, true );
+        }
+    }
+
+    private function is_lazy_loading_enabled () {
+        if ( get_option ( 'simple-webp-images-lazy-loading' ) == 'on' ) {
+            return true;
+        }
+
+        return false;
     }
 }
