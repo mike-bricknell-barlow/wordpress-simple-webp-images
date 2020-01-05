@@ -58,6 +58,8 @@ class Simple_Webp_Images {
 
         $quality = ( $set_qual = get_option( 'simple-webp-images-conversion-quality' ) ) ? $set_qual : 80;
 
+        imagepalettetotruecolor ( $image );
+
         $created = imagewebp( $image, $filename . '.webp', $quality );
 
         return $created;
