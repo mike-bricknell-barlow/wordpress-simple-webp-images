@@ -26,7 +26,7 @@ class Simple_Webp_Images_HTML {
 
         foreach ( $imgs as $img ) {
             
-            if ( $img->parentNode->tagName == "source" ) {
+            if ( $img->parentNode->tagName == "source" || $img->parentNode->tagName == "picture" ) {
                 continue;
             }
 
@@ -100,8 +100,16 @@ class Simple_Webp_Images_HTML {
         }
         unset ( $source );
 
+        if ( empty ( $sources ) ) {
+            return false;
+        }
+
         foreach ( $sources as $source ) {
             $src_set .= $source[0] . ' ' . $source[1] . 'w, ';
+        }
+
+        if ( strpos ( $src_set, 'http' ) === FALSE ) {
+            return false;
         }
 
         return $src_set;
@@ -141,9 +149,12 @@ class Simple_Webp_Images_HTML {
         }
         
         $new_img_tag = '<picture class="' . $classes . '">';
-        $new_img_tag .= '<source srcset="' . $webp_src_set . '" sizes="' . $size_string . '" type="image/webp">';
+        
+        if ( $webp_src_set ) {
+            $new_img_tag .= '<source srcset="' . $webp_src_set . '" sizes="' . $size_string . '" type="image/webp">';
+        }
 
-        if ( $img_type ) {
+        if ( $img_type && $src_set ) {
             $new_img_tag .= '<source srcset="' . $src_set . '" sizes="' . $size_string . '" type="' . $img_type . '">';
         }
             
