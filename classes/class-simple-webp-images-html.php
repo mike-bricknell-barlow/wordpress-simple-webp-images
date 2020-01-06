@@ -7,7 +7,8 @@ class Simple_Webp_Images_HTML {
 
     private function hooks_and_filters () {
         add_action( 'wp_ajax_output_single_convert_link', array ( $this, 'output_single_convert_link' ) );
-        add_action( 'template_redirect', array ( $this, 'start_html_buffer' ), 0 );
+        add_action( 'muplugins_loaded', array ( $this, 'start_html_buffer' ), 0 );
+        add_action( 'plugins_loaded', array ( $this, 'start_html_buffer' ), 0 );
 	    add_action( 'wp_enqueue_scripts', array ( $this, 'enqueue_assets' ) );
 
         add_filter( 'wp_get_attachment_image_attributes', array( $this, 'add_id_attribute_to_image_tags' ), 10, 3 );
@@ -49,8 +50,10 @@ class Simple_Webp_Images_HTML {
     }
 
     public function start_html_buffer () {
-        add_action( 'shutdown', array ( $this, 'stop_html_buffer' ), PHP_INT_MAX );
-        ob_start( array ( $this, 'modify_final_html_output' ) ); 
+        if ( ! ob_get_level() ) {
+            add_action( 'shutdown', array ( $this, 'stop_html_buffer' ), PHP_INT_MAX );
+            ob_start( array ( $this, 'modify_final_html_output' ) ); 
+        }
     }
 
     public function stop_html_buffer () {
