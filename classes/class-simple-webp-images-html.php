@@ -7,12 +7,11 @@ class Simple_Webp_Images_HTML {
 
     private function hooks_and_filters () {
         add_action( 'wp_ajax_output_single_convert_link', array ( $this, 'output_single_convert_link' ) );
-        add_action( 'muplugins_loaded', array ( $this, 'start_html_buffer' ), 0 );
-        add_action( 'plugins_loaded', array ( $this, 'start_html_buffer' ), 0 );
 	    add_action( 'wp_enqueue_scripts', array ( $this, 'enqueue_assets' ) );
 
         add_filter( 'wp_get_attachment_image_attributes', array( $this, 'add_id_attribute_to_image_tags' ), 10, 3 );
         add_filter( 'the_content', array ( $this, 'wrap_img_tags_with_picture_element' ), 20 );
+        add_filter( 'final_output', array ( $this, 'wrap_img_tags_with_picture_element' ) );
     }
 
     public function output_single_convert_link () {
@@ -21,6 +20,11 @@ class Simple_Webp_Images_HTML {
     }
 
     public function wrap_img_tags_with_picture_element ( $content ) {
+        
+        if ( current_filter () == 'final_output' && ! $this->is_output_buffering_enabled () ) {
+            return $content;
+        }
+        
         libxml_use_internal_errors ( true );
         $post = new DOMDocument ();
         $post->loadHTML ( $content );
@@ -47,22 +51,6 @@ class Simple_Webp_Images_HTML {
         }
         
         return $post->saveHTML();
-    }
-
-    public function start_html_buffer () {
-        if ( ! ob_get_level() ) {
-            add_action( 'shutdown', array ( $this, 'stop_html_buffer' ), PHP_INT_MAX );
-            ob_start( array ( $this, 'modify_final_html_output' ) ); 
-        }
-    }
-
-    public function stop_html_buffer () {
-        ob_end_flush();
-    }
-
-    public function modify_final_html_output ( $content ) {
-        $content = $this->wrap_img_tags_with_picture_element ( $content );
-        return $content;
     }
 
     private function get_all_image_sizes () {
@@ -206,5 +194,17 @@ class Simple_Webp_Images_HTML {
         }
 
         return false;
+    }
+
+    private function is_output_buffering_enabled () {
+        if ( get_option ( 'simple-webp-images-output-buffering' ) == 'on' ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function swi_log ( $var ) {
+        file_put_contents(get_template_directory().'/errors.html', print_r($var, 1), FILE_APPEND);
     }
 }

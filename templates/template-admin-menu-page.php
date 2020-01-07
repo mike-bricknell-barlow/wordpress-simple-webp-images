@@ -15,7 +15,12 @@
                                 ?>
 
                                 <th><label for="<?php echo $field['id'] ?>"><?php echo $field['label'] ?></label></th>
-                                <td><input type="text" id="<?php echo $field['id'] ?>" name="<?php echo $field['id'] ?>" placeholder="80" value="<?php echo $field['value'] ?>" /></td>
+                                <td>
+                                    <input type="text" id="<?php echo $field['id'] ?>" name="<?php echo $field['id'] ?>" placeholder="80" value="<?php echo $field['value'] ?>" />
+                                    <?php if ( $field['description'] ): ?>
+                                        <p><?php echo $field['description'] ?></p>
+                                    <?php endif; ?>
+                                </td>
 
                                 <?php
                                 break;
@@ -24,7 +29,12 @@
                                 ?>
 
                                 <th><label for="<?php echo $field['id'] ?>"><?php echo $field['label'] ?></label></th>
-                                <td><input type="checkbox" id="<?php echo $field['id'] ?>" name="<?php echo $field['id'] ?>" <?php echo ( $field['value'] == 'on' ) ? 'checked="checked"' : '' ?> /></td>
+                                <td>
+                                    <input type="checkbox" id="<?php echo $field['id'] ?>" name="<?php echo $field['id'] ?>" <?php echo ( $field['value'] == 'on' ) ? 'checked="checked"' : '' ?> />
+                                    <?php if ( $field['description'] ): ?>
+                                        <p><?php echo $field['description'] ?></p>
+                                    <?php endif; ?>
+                                </td>
 
                                 <?php
                                 break;
