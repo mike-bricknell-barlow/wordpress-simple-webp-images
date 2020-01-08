@@ -122,7 +122,17 @@ class Simple_Webp_Images_HTML {
     }
 
     private function generate_picture_element ( $img_tag, $src_set, $classes, $attachment_id ) {
-        $src_set = $this->generate_src_set ( $attachment_id );
+	if ( ! $attachment_id ) {
+            if ( strpos ( $classes, 'wp-image-' ) !== FALSE ) {
+                $ids = array();
+                preg_match_all ( '/wp-image-(\d{1,12})/', $classes, $ids );
+                if ( isset ( $ids[1][0] ) ) {
+                    $attachment_id = $ids[1][0];
+                }
+            }
+        }      
+
+	$src_set = $this->generate_src_set ( $attachment_id );
         $size_string = $this->generate_sizes_string ( $src_set );
         
         $webp_src_set = $src_set;
@@ -139,8 +149,6 @@ class Simple_Webp_Images_HTML {
                 $img_type = 'image/png';
                 break;
         }
-        
-        $new_img_tag = '<picture class="' . $classes . '">';
 
         $src_set_title = 'srcset';
         $sizes_title = 'sizes';
@@ -151,7 +159,10 @@ class Simple_Webp_Images_HTML {
 
             $img_tag = str_replace ( 'src', 'data-src', $img_tag );
             $img_tag = str_replace ( 'class="', 'class="lazy ', $img_tag );
+	    $classes .= ' lazy';
         }
+
+	$new_img_tag = '<picture class="' . $classes . '">';
         
         if ( $webp_src_set ) {
             $new_img_tag .= '<source ' . $src_set_title . '="' . $webp_src_set . '" ' . $sizes_title . '="' . $size_string . '" type="image/webp">';
@@ -205,6 +216,6 @@ class Simple_Webp_Images_HTML {
     }
 
     public function swi_log ( $var ) {
-        file_put_contents(get_template_directory().'/errors.html', print_r($var, 1), FILE_APPEND);
+        file_put_contents(get_template_directory().'/errors.txt', print_r($var, 1), FILE_APPEND);
     }
 }
