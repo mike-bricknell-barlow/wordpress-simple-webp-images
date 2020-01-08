@@ -153,16 +153,26 @@ class Simple_Webp_Images_HTML {
         $src_set_title = 'srcset';
         $sizes_title = 'sizes';
 
+	$img_tag = str_replace ( 'class="', 'class=" ' . $classes, $img_tag );
+
+	if ( strpos ( 'class', $img_tag ) === FALSE ) {
+	    $img_tag = str_replace ( 'src', 'class="' . $classes . '" src', $img_tag );
+	}
+
         if ( $this->is_lazy_loading_enabled () ) {
             $src_set_title = 'data-srcset';
             $sizes_title = 'data-sizes';
 
             $img_tag = str_replace ( 'src', 'data-src', $img_tag );
             $img_tag = str_replace ( 'class="', 'class="lazy ', $img_tag );
+
+	    if ( strpos ( 'class', $img_tag ) === FALSE ) {
+		$img_tag = str_replace ( 'data-src', 'class="lazy" data-src', $img_tag );
+	    }
 	    $classes .= ' lazy';
         }
 
-	$new_img_tag = '<picture class="' . $classes . '">';
+	$new_img_tag = '<picture>';
         
         if ( $webp_src_set ) {
             $new_img_tag .= '<source ' . $src_set_title . '="' . $webp_src_set . '" ' . $sizes_title . '="' . $size_string . '" type="image/webp">';
