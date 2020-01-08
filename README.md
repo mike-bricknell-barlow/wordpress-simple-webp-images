@@ -16,3 +16,5 @@ This plugin allows the use of .webp images on a WordPress site in a simple and e
 
 ** Options **
  - Conversion quality - this can be set on the settings page at Settings -> Simple Webp Images. The quality value to be entered is a percentage - by default, this is set at 80%.
+ - HTML Output Buffering - when activated, allows the plugin to perform a find-and-replace on the HTML that WordPress has generated for output to the browser to replace image tags. This tends to perform the image tag replacement more reliably, but can cause issues with some themes.
+ - Lazy loading - when activated, generated <picture> tags are lazy-loaded.

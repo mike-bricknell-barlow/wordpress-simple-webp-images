@@ -77,7 +77,7 @@
             },
             'success': function ( response ) {
                 $( '.step-2' ).slideUp();
-                $( '#total-images' ).text( response );
+                $( '#total-images' ).text( $ ( response ).text() );
                 $( '.step-3' ).slideDown();
                 window.bulkConvertRunning = false;
                 window.bulkConvertPage = 1;
@@ -99,21 +99,23 @@
                         'paged': window.bulkConvertPage,
                     },
                     'success': function ( response ) {
-                        if( response === "All done" ) {
+                        if( $ ( response ).text().includes ( "All done" ) ) {
                             $( '.converting' ).slideUp();
                             $( '.step-4' ).slideDown();
                             return false;
                         } 
                         
                         var totalImages = parseInt( $( '#total-images' ).text() );
-                        var processedImages = parseInt(response);
+                        var processedImages = $ ( response ).text();
                         
-                        if ( processedImages > totalImages ) {
+                        if ( parseInt ( processedImages ) > totalImages ) {
                             processedImages = totalImages;
                         }
 
-                        $( '#remaining-images' ).text( processedImages );
-                        window.bulkConvertRunning = false;
+			if ( processedImages != "All done" )
+                        	$( '#remaining-images' ).text( processedImages );
+                        
+			window.bulkConvertRunning = false;
                         window.bulkConvertPage = parseInt(window.bulkConvertPage) + 1;
                     },
                 } );
