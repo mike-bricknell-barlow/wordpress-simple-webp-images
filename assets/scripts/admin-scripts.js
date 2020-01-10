@@ -77,7 +77,13 @@
             },
             'success': function ( response ) {
                 $( '.step-2' ).slideUp();
-                $( '#total-images' ).text( $ ( response ).text() );
+                
+                var totalImages = response;
+
+                if ( isNaN(totalImages) )
+                    totalImages = $ ( response ).text();
+
+                $( '#total-images' ).text( totalImages );
                 $( '.step-3' ).slideDown();
                 window.bulkConvertRunning = false;
                 window.bulkConvertPage = 1;
@@ -99,23 +105,26 @@
                         'paged': window.bulkConvertPage,
                     },
                     'success': function ( response ) {
-                        if( $ ( response ).text().includes ( "All done" ) ) {
+                        if( response == "All done" || $ ( response ).text().includes ( "All done" ) ) {
                             $( '.converting' ).slideUp();
                             $( '.step-4' ).slideDown();
                             return false;
                         } 
                         
                         var totalImages = parseInt( $( '#total-images' ).text() );
-                        var processedImages = $ ( response ).text();
+                        var processedImages = response;
+
+                        if ( isNaN(processedImages) )
+                            processedImages = $ ( response ).text();
                         
                         if ( parseInt ( processedImages ) > totalImages ) {
                             processedImages = totalImages;
                         }
 
-			if ( processedImages != "All done" )
+			            if ( processedImages != "All done" )
                         	$( '#remaining-images' ).text( processedImages );
                         
-			window.bulkConvertRunning = false;
+			            window.bulkConvertRunning = false;
                         window.bulkConvertPage = parseInt(window.bulkConvertPage) + 1;
                     },
                 } );

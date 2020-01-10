@@ -27,7 +27,7 @@ class Simple_Webp_Images_HTML {
         
         libxml_use_internal_errors ( true );
         $post = new DOMDocument ();
-        $post->loadHTML ( $content );
+        $post->loadHTML ( '<?xml encoding="utf-8" ?>' . $content );
         $imgs = $post->getElementsByTagName( 'img' );
 
         foreach ( $imgs as $img ) {
@@ -122,7 +122,7 @@ class Simple_Webp_Images_HTML {
     }
 
     private function generate_picture_element ( $img_tag, $src_set, $classes, $attachment_id ) {
-	if ( ! $attachment_id ) {
+	    if ( ! $attachment_id ) {
             if ( strpos ( $classes, 'wp-image-' ) !== FALSE ) {
                 $ids = array();
                 preg_match_all ( '/wp-image-(\d{1,12})/', $classes, $ids );
@@ -132,47 +132,47 @@ class Simple_Webp_Images_HTML {
             }
         }      
 
-	$src_set = $this->generate_src_set ( $attachment_id );
-        $size_string = $this->generate_sizes_string ( $src_set );
-        
-        $webp_src_set = $src_set;
-        $webp_src_set = str_replace ( '.jpg', '.jpg.webp', $webp_src_set );
-        $webp_src_set = str_replace ( '.png', '.png.webp', $webp_src_set );
+        $src_set = $this->generate_src_set ( $attachment_id );
+            $size_string = $this->generate_sizes_string ( $src_set );
+            
+            $webp_src_set = $src_set;
+            $webp_src_set = str_replace ( '.jpg', '.jpg.webp', $webp_src_set );
+            $webp_src_set = str_replace ( '.png', '.png.webp', $webp_src_set );
 
-        $img_type = false;
-        switch ( $img_tag ) {
-            case strpos ( $img_tag, '.jpg' ) !== FALSE:
-                $img_type = 'image/jpg';
-                break;
+            $img_type = false;
+            switch ( $img_tag ) {
+                case strpos ( $img_tag, '.jpg' ) !== FALSE:
+                    $img_type = 'image/jpg';
+                    break;
 
-            case strpos ( $img_tag, '.png' ) !== FALSE:
-                $img_type = 'image/png';
-                break;
+                case strpos ( $img_tag, '.png' ) !== FALSE:
+                    $img_type = 'image/png';
+                    break;
+            }
+
+            $src_set_title = 'srcset';
+            $sizes_title = 'sizes';
+
+        $img_tag = str_replace ( 'class="', 'class=" ' . $classes, $img_tag );
+
+        if ( strpos ( 'class', $img_tag ) === FALSE ) {
+            $img_tag = str_replace ( 'src', 'class="' . $classes . '" src', $img_tag );
         }
 
-        $src_set_title = 'srcset';
-        $sizes_title = 'sizes';
+            if ( $this->is_lazy_loading_enabled () ) {
+                $src_set_title = 'data-srcset';
+                $sizes_title = 'data-sizes';
 
-	$img_tag = str_replace ( 'class="', 'class=" ' . $classes, $img_tag );
+                $img_tag = str_replace ( 'src', 'data-src', $img_tag );
+                $img_tag = str_replace ( 'class="', 'class="lazy ', $img_tag );
 
-	if ( strpos ( 'class', $img_tag ) === FALSE ) {
-	    $img_tag = str_replace ( 'src', 'class="' . $classes . '" src', $img_tag );
-	}
+            if ( strpos ( 'class', $img_tag ) === FALSE ) {
+            $img_tag = str_replace ( 'data-src', 'class="lazy" data-src', $img_tag );
+            }
+            $classes .= ' lazy';
+            }
 
-        if ( $this->is_lazy_loading_enabled () ) {
-            $src_set_title = 'data-srcset';
-            $sizes_title = 'data-sizes';
-
-            $img_tag = str_replace ( 'src', 'data-src', $img_tag );
-            $img_tag = str_replace ( 'class="', 'class="lazy ', $img_tag );
-
-	    if ( strpos ( 'class', $img_tag ) === FALSE ) {
-		$img_tag = str_replace ( 'data-src', 'class="lazy" data-src', $img_tag );
-	    }
-	    $classes .= ' lazy';
-        }
-
-	$new_img_tag = '<picture>';
+        $new_img_tag = '<picture>';
         
         if ( $webp_src_set ) {
             $new_img_tag .= '<source ' . $src_set_title . '="' . $webp_src_set . '" ' . $sizes_title . '="' . $size_string . '" type="image/webp">';
@@ -226,6 +226,6 @@ class Simple_Webp_Images_HTML {
     }
 
     public function swi_log ( $var ) {
-        file_put_contents(get_template_directory().'/errors.txt', print_r($var, 1), FILE_APPEND);
+        file_put_contents(get_template_directory().'/errors.html', print_r($var, 1), FILE_APPEND);
     }
 }

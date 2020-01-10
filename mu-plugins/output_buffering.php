@@ -1,5 +1,9 @@
 <?php
-
+error_log("pre check");
+if ( get_option ( 'simple-webp-images-output-buffering' ) != 'on' ) {
+    return;
+}
+error_log("buffered");
 ob_start();
 
 add_action('shutdown', function() {
