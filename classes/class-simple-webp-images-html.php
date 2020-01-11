@@ -204,8 +204,8 @@ class Simple_Webp_Images_HTML {
 
     public function enqueue_assets () {
         if ( $this->is_lazy_loading_enabled () ) {
-            wp_enqueue_script ( 'lazyload-scripts', SIMPLE_WEBP_IMAGES_PLUGIN_DIR_URL . 'assets/scripts/lazyload.min.js', array (), $this->version, true );
-            wp_enqueue_script ( 'swi-public-scripts', SIMPLE_WEBP_IMAGES_PLUGIN_DIR_URL . 'dist/scripts/public-scripts.js', array ( 'lazyload-scripts' ), $this->version, true );
+            wp_enqueue_script ( 'lazyload-scripts', SIMPLE_WEBP_IMAGES_PLUGIN_DIR_URL . 'assets/scripts/lazyload.min.js', array (), SIMPLE_WEBP_IMAGES_VERSION, true );
+            wp_enqueue_script ( 'swi-public-scripts', SIMPLE_WEBP_IMAGES_PLUGIN_DIR_URL . 'dist/scripts/public-scripts.js', array ( 'lazyload-scripts' ), SIMPLE_WEBP_IMAGES_VERSION, true );
         }
     }
 

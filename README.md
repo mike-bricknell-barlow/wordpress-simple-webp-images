@@ -33,21 +33,25 @@ This plugin allows the use of .webp images on a WordPress site in a simple and e
   
   ** Changelog **
   
-  Version 1.0.0
-  29/12/2019
+Version 1.0.0
+29/12/2019
   - Initial plugin version
   - Bulk conversion of images from settings screen
   - Frontend img replacement via `the_content` filter
   
-  Version 1.0.5
-  04/01/20
+Version 1.0.5
+04/01/20
    - Adding option for frontend img replacement via HTML output buffering
    - General bugfixes
    
-  Version 1.1.0
-  05/01/20
+Version 1.1.0
+05/01/20
    - Adding option for lazy load functionality
    
-   Version 1.1.5
-   10/01/20
+Version 1.1.5
+10/01/20
    - General bugfixes/stability improvements
+
+Version 1.1.6
+11/01/20
+   - Bugfix, error with public assets version
