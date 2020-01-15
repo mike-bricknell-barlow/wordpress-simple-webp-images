@@ -1,12 +1,12 @@
 <?php
 
-if ( get_option ( 'simple-webp-images-output-buffering' ) != 'on' ) {
+if ( is_admin() || get_option ( 'simple-webp-images-output-buffering' ) != 'on' ) {
     return;
 }
 ;
 ob_start();
 
-add_action('shutdown', function() {
+add_action( 'shutdown', function() {
     $final = '';
 
     $levels = ob_get_level();
@@ -16,5 +16,5 @@ add_action('shutdown', function() {
     }
 
     // Apply any filters to the final output
-    echo apply_filters('final_output', $final);
-}, 0);
+    echo apply_filters( 'final_output', $final );
+}, 0 );

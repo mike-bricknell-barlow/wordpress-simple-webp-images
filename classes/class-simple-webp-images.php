@@ -78,18 +78,18 @@ class Simple_Webp_Images {
     }
 
     public function convert_single_attachment () {
-        $created = $this->convert_single_attachment_by_attachment_id( $_POST['attachment_id'] );
+        $created = $this->convert_single_attachment_by_attachment_id( intval( $_POST['attachment_id'] ) );
         
         if( $created ) {
-            echo 'Success!';
+            echo esc_html( 'Success!' );
             wp_die();
         } 
        
-        echo 'Failure.';
+        echo esc_html( 'Failure.' );
         wp_die();
     }
 
-    public function convert_single_attachment_by_attachment_id ($attachment_id) {
+    public function convert_single_attachment_by_attachment_id ( $attachment_id ) {
         $attachment_meta = get_post_meta ( $attachment_id, '_wp_attachment_metadata', true );
         $file_path_arr = explode( '/', $attachment_meta['file'] );
         

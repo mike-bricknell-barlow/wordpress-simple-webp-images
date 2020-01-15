@@ -14,11 +14,11 @@
                             case 'text':
                                 ?>
 
-                                <th><label for="<?php echo $field['id'] ?>"><?php echo $field['label'] ?></label></th>
+                                <th><label for="<?php echo esc_html( $field['id'] ) ?>"><?php echo esc_html( $field['label'] ) ?></label></th>
                                 <td>
-                                    <input type="text" id="<?php echo $field['id'] ?>" name="<?php echo $field['id'] ?>" placeholder="80" value="<?php echo $field['value'] ?>" />
+                                    <input type="text" id="<?php echo esc_html( $field['id'] ) ?>" name="<?php echo esc_html( $field['id'] ) ?>" placeholder="80" value="<?php echo esc_html( $field['value'] ) ?>" />
                                     <?php if ( $field['description'] ): ?>
-                                        <p><?php echo $field['description'] ?></p>
+                                        <p><?php echo esc_html( $field['description'] ) ?></p>
                                     <?php endif; ?>
                                 </td>
 
@@ -28,11 +28,11 @@
                             case 'checkbox':
                                 ?>
 
-                                <th><label for="<?php echo $field['id'] ?>"><?php echo $field['label'] ?></label></th>
+                                <th><label for="<?php echo esc_html( $field['id'] ) ?>"><?php echo esc_html( $field['label'] ) ?></label></th>
                                 <td>
-                                    <input type="checkbox" id="<?php echo $field['id'] ?>" name="<?php echo $field['id'] ?>" <?php echo ( $field['value'] == 'on' ) ? 'checked="checked"' : '' ?> />
+                                    <input type="checkbox" id="<?php echo esc_html( $field['id'] ) ?>" name="<?php echo esc_html( $field['id'] ) ?>" <?php echo ( $field['value'] == 'on' ) ? esc_html( 'checked="checked"' ) : '' ?> />
                                     <?php if ( $field['description'] ): ?>
-                                        <p><?php echo $field['description'] ?></p>
+                                        <p><?php echo esc_html( $field['description'] ) ?></p>
                                     <?php endif; ?>
                                 </td>
 

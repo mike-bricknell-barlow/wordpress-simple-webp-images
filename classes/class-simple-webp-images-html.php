@@ -224,8 +224,4 @@ class Simple_Webp_Images_HTML {
 
         return false;
     }
-
-    public function swi_log ( $var ) {
-        file_put_contents(get_template_directory().'/errors.html', print_r($var, 1), FILE_APPEND);
-    }
 }

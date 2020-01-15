@@ -101,22 +101,27 @@ class Simple_Webp_Images_Admin {
         $fields = $this->get_options_fields();
 
         foreach ( $fields as $field ) {
-            if ( isset( $_POST[$field['id']] ) ) {
-                update_option( $field['id'], $_POST[$field['id']] );
+            $field_id = false;
+            if( isset( $_POST[$field['id']] ) ) {
+                $field_id = sanitize_text_field( $_POST[$field['id']] );
+            }
+            
+            if ( $field_id ) {
+                update_option( $field['id'], $field_id );
             }
 
-            if ( $field['type'] == 'checkbox' && ! isset ( $_POST[$field['id']] ) ) {
+            if ( $field['type'] == 'checkbox' && ! $field_id ) {
                 update_option( $field['id'], 'off' );
             } 
         }
 
-        wp_redirect( $_SERVER["HTTP_REFERER"] );
+        wp_redirect( get_admin_url( null, 'options-general.php?page=simple-webp-images' ) );
         exit();
     }
 
     public function get_all_images () {
         $total_images = $this->get_count_of_images();
-        echo $total_images;
+        echo esc_html( $total_images );
         wp_die();
     }
 
@@ -145,11 +150,11 @@ class Simple_Webp_Images_Admin {
     }
 
     public function bulk_convert_images () {
-        $paged = $_POST['paged'];
+        $paged = intval( $_POST['paged'] );
         $images = $this->get_images_paged( $paged );
 
         if( !$images ) {
-            echo "All done";
+            echo esc_html( "All done" );
             wp_die();
         }
 
@@ -161,7 +166,7 @@ class Simple_Webp_Images_Admin {
 
         $images_converted = $paged * 10;
 
-        echo $images_converted;
+        echo esc_html( $images_converted );
         wp_die();
     }
 }
