@@ -50,6 +50,9 @@ Firstly, turn off the setting so that your site starts displaying correctly agai
 
 == Changelog ==
 
+= 1.1.9 = 
+* Adding settings link to plugins page for ease of use
+
 = 1.1.8 = 
 * Preventing HTML output buffering from affecting wp ajax requests, as this breaks some functionality
 
