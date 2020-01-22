@@ -24,6 +24,11 @@ class Simple_Webp_Images_HTML {
         if ( current_filter () == 'final_output' && ! $this->is_output_buffering_enabled () ) {
             return $content;
         }
+
+        if( wp_doing_ajax() ) {
+            // Processing HTML generated in ajax requests can break functionality - skip these
+            return $content;
+        }
         
         libxml_use_internal_errors ( true );
         $post = new DOMDocument ();
@@ -50,7 +55,7 @@ class Simple_Webp_Images_HTML {
         
         }
         
-        return $post->saveHTML();
+        return str_replace( '<?xml encoding="utf-8" ?>', '', $post->saveHTML() );
     }
 
     private function get_all_image_sizes () {

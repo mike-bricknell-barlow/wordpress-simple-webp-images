@@ -1,9 +1,10 @@
 <?php
 
+// Don't trigger output buffering in admin area, or when option is disabled
 if ( is_admin() || get_option ( 'simple-webp-images-output-buffering' ) != 'on' ) {
     return;
 }
-;
+
 ob_start();
 
 add_action( 'shutdown', function() {
