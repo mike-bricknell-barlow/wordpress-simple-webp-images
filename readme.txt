@@ -50,6 +50,9 @@ Firstly, turn off the setting so that your site starts displaying correctly agai
 
 == Changelog ==
 
+= 1.1.10 = 
+* Bugfix - adding check to verify if output buffered string is HTML before attempting to process 
+
 = 1.1.9 = 
 * Adding settings link to plugins page for ease of use
 

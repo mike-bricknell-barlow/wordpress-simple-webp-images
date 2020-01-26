@@ -19,14 +19,35 @@ class Simple_Webp_Images_HTML {
         wp_die();
     }
 
-    public function wrap_img_tags_with_picture_element ( $content ) {
-        
+    private function is_HTML( $string ) {
+        if( $string != strip_tags( $string ) ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private function is_valid_string( $content ) {
         if ( current_filter () == 'final_output' && ! $this->is_output_buffering_enabled () ) {
-            return $content;
+            return false;
         }
 
         if( wp_doing_ajax() ) {
             // Processing HTML generated in ajax requests can break functionality - skip these
+            return false;
+        }
+
+        if( ! $this->is_HTML( $content ) ) {
+            // If string is not HTML, don't try to process it
+            return false;
+        }
+
+        return true;
+    }
+
+    public function wrap_img_tags_with_picture_element ( $content ) {
+        
+        if( ! $this->is_valid_string( $content ) ) {
             return $content;
         }
         
@@ -230,3 +251,4 @@ class Simple_Webp_Images_HTML {
         return false;
     }
 }
+
