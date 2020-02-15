@@ -56,7 +56,7 @@ class Simple_Webp_Images_Admin {
 
     public function display_admin_menu_page () {
         $fields = $this->get_options_fields();
-        include SIMPLE_WEBP_IMAGES_PLUGIN_DIR_PATH . '/templates/template-admin-menu-page.php';
+        include SIMPLE_WEBP_IMAGES_PLUGIN_DIR_PATH . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'template-admin-menu-page.php';
     }
 
     public function register_settings () {

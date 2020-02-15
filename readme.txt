@@ -50,6 +50,9 @@ Firstly, turn off the setting so that your site starts displaying correctly agai
 
 == Changelog ==
 
+= 1.1.12 =
+* Bugfix - Updating to use directory separator constant to fix issues on Windows based systems
+
 = 1.1.11 = 
 * Bugfix - Adding information message to admin page to explain process of temporarily setting Wordfence Firewall to Learning Mode, to avoid issue with blocking of conversion ajax calls.
 

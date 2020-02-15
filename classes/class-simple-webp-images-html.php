@@ -15,7 +15,7 @@ class Simple_Webp_Images_HTML {
     }
 
     public function output_single_convert_link () {
-        include SIMPLE_WEBP_IMAGES_PLUGIN_DIR_PATH . '/templates/partial-single-convert-button.php';
+        include SIMPLE_WEBP_IMAGES_PLUGIN_DIR_PATH . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'partial-single-convert-button.php';
         wp_die();
     }
 
