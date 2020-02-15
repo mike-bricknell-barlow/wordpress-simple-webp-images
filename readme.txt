@@ -50,6 +50,9 @@ Firstly, turn off the setting so that your site starts displaying correctly agai
 
 == Changelog ==
 
+= 1.1.11 = 
+* Bugfix - Adding information message to admin page to explain process of temporarily setting Wordfence Firewall to Learning Mode, to avoid issue with blocking of conversion ajax calls.
+
 = 1.1.10 = 
 * Bugfix - adding check to verify if output buffered string is HTML before attempting to process 
 
