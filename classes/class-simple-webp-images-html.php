@@ -31,6 +31,11 @@ class Simple_Webp_Images_HTML {
         if ( current_filter () == 'final_output' && ! $this->is_output_buffering_enabled () ) {
             return false;
         }
+	    
+    	if( $this->is_json( $content ) ) {
+            // Ignore JSON payloads, such as those used by Gutenberg in admin
+            return false;
+        }
 
         if( wp_doing_ajax() ) {
             // Processing HTML generated in ajax requests can break functionality - skip these
