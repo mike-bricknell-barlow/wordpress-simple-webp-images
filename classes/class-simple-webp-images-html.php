@@ -49,6 +49,11 @@ class Simple_Webp_Images_HTML {
 
         return true;
     }
+	
+    public function is_json( $string ) {
+        json_decode( $string );
+        return ( json_last_error() == JSON_ERROR_NONE );
+    }  
 
     public function wrap_img_tags_with_picture_element ( $content ) {
         
