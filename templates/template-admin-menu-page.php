@@ -1,6 +1,8 @@
 <div class="wrap">
     <h1>Simple Webp Images - Settings</h1>
 
+    <?php do_action( 'show_pre_plugin_messages' ) ?>
+
     <form method="post" action="<?php echo admin_url ( 'admin-post.php' ) ?>"> 
         <?php settings_fields( 'simple-webp-images-options-group' ); ?>
         <input type="hidden" name="action" value="update_settings">

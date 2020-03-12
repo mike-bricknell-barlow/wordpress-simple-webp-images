@@ -15,7 +15,7 @@ class Simple_Webp_Images_HTML {
     }
 
     public function output_single_convert_link () {
-        include SIMPLE_WEBP_IMAGES_PLUGIN_DIR_PATH . '/templates/partial-single-convert-button.php';
+        include SIMPLE_WEBP_IMAGES_PLUGIN_DIR_PATH . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'partial-single-convert-button.php';
         wp_die();
     }
 
@@ -31,6 +31,11 @@ class Simple_Webp_Images_HTML {
         if ( current_filter () == 'final_output' && ! $this->is_output_buffering_enabled () ) {
             return false;
         }
+	    
+    	if( $this->is_json( $content ) ) {
+            // Ignore JSON payloads, such as those used by Gutenberg in admin
+            return false;
+        }
 
         if( wp_doing_ajax() ) {
             // Processing HTML generated in ajax requests can break functionality - skip these
@@ -44,6 +49,11 @@ class Simple_Webp_Images_HTML {
 
         return true;
     }
+	
+    public function is_json( $string ) {
+        json_decode( $string );
+        return ( json_last_error() == JSON_ERROR_NONE );
+    }  
 
     public function wrap_img_tags_with_picture_element ( $content ) {
         

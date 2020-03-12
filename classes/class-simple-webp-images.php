@@ -25,16 +25,16 @@ class Simple_Webp_Images {
     }
 
     public function generate_webp_on_resize ( $metadata, $attachment_id ) {
-        $file_path_arr = explode( '/', $metadata['file'] );
+        $file_path_arr = explode( DIRECTORY_SEPARATOR, $metadata['file'] );
         $mime_type = false;
 
         foreach( $metadata['sizes'] as $size ) {
-            $filepath = wp_get_upload_dir()['basedir'] . '/' . $file_path_arr[0] . '/' . $file_path_arr[1] . '/' . $size['file'];
+            $filepath = wp_get_upload_dir()['basedir'] . DIRECTORY_SEPARATOR . $file_path_arr[0] . DIRECTORY_SEPARATOR . $file_path_arr[1] . DIRECTORY_SEPARATOR . $size['file'];
             $mime_type = $size['mime-type'];
             $this->generate_webp( $filepath, $mime_type );
         }
 
-        $this->generate_webp( wp_get_upload_dir()['basedir'] . '/' . $metadata['file'], $mime_type );
+        $this->generate_webp( wp_get_upload_dir()['basedir'] . DIRECTORY_SEPARATOR . $metadata['file'], $mime_type );
         
         return $metadata;
     }
@@ -68,13 +68,13 @@ class Simple_Webp_Images {
     public function delete_webp_on_media_deletion ( $post_id ) {
         $attachment_meta = get_post_meta ( $post_id, '_wp_attachment_metadata', true );
         
-        $file_path_arr = explode( '/', $attachment_meta['file'] );
+        $file_path_arr = explode( DIRECTORY_SEPARATOR, $attachment_meta['file'] );
         foreach( $attachment_meta['sizes'] as $size ) {
-            $filepath = wp_get_upload_dir()['basedir'] . '/' . $file_path_arr[0] . '/' . $file_path_arr[1] . '/' . $size['file'];
+            $filepath = wp_get_upload_dir()['basedir'] . DIRECTORY_SEPARATOR . $file_path_arr[0] . DIRECTORY_SEPARATOR . $file_path_arr[1] . DIRECTORY_SEPARATOR . $size['file'];
             unlink( $filepath );
         }
 
-        unlink( wp_get_upload_dir()['basedir'] . '/' . $attachment_meta['file'] . '.webp' );
+        unlink( wp_get_upload_dir()['basedir'] . DIRECTORY_SEPARATOR . $attachment_meta['file'] . '.webp' );
     }
 
     public function convert_single_attachment () {
@@ -91,17 +91,17 @@ class Simple_Webp_Images {
 
     public function convert_single_attachment_by_attachment_id ( $attachment_id ) {
         $attachment_meta = get_post_meta ( $attachment_id, '_wp_attachment_metadata', true );
-        $file_path_arr = explode( '/', $attachment_meta['file'] );
+        $file_path_arr = explode( DIRECTORY_SEPARATOR, $attachment_meta['file'] );
         
         $mime_type = false;
         $created = false;
         foreach( $attachment_meta['sizes'] as $size ) {
-            $filepath = wp_get_upload_dir()['basedir'] . '/' . $file_path_arr[0] . '/' . $file_path_arr[1] . '/' . $size['file'];
+            $filepath = wp_get_upload_dir()['basedir'] . DIRECTORY_SEPARATOR . $file_path_arr[0] . DIRECTORY_SEPARATOR . $file_path_arr[1] . DIRECTORY_SEPARATOR . $size['file'];
             $mime_type = $size['mime-type'];
             $this->generate_webp( $filepath, $mime_type );
         }
 
-        $created = $this->generate_webp( wp_get_upload_dir()['basedir'] . '/' . $attachment_meta['file'], $mime_type );
+        $created = $this->generate_webp( wp_get_upload_dir()['basedir'] . DIRECTORY_SEPARATOR . $attachment_meta['file'], $mime_type );
         return $created;
     }
 }

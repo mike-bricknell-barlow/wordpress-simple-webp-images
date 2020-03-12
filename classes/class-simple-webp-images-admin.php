@@ -24,6 +24,7 @@ class Simple_Webp_Images_Admin {
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
         add_action( 'wp_ajax_get_total_images', array( $this, 'get_all_images' ) );
         add_action( 'wp_ajax_bulk_convert_images', array( $this, 'bulk_convert_images' ) );
+        add_action( 'show_pre_plugin_messages', array( $this, 'display_wordfence_message' ) );
     }
 
     public function enqueue_admin_assets () {
@@ -55,7 +56,7 @@ class Simple_Webp_Images_Admin {
 
     public function display_admin_menu_page () {
         $fields = $this->get_options_fields();
-        include SIMPLE_WEBP_IMAGES_PLUGIN_DIR_PATH . '/templates/template-admin-menu-page.php';
+        include SIMPLE_WEBP_IMAGES_PLUGIN_DIR_PATH . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'template-admin-menu-page.php';
     }
 
     public function register_settings () {
@@ -168,5 +169,20 @@ class Simple_Webp_Images_Admin {
 
         echo esc_html( $images_converted );
         wp_die();
+    }
+
+    public function display_wordfence_message () {
+        if( is_plugin_active( 'wordfence/wordfence.php' ) ) {
+            echo '<div class="simple-webp-images-messages">';
+                echo '<p>We\'ve noticed that you\'re using the Wordfence plugin on your website.</p>';
+                echo '<p>Sometimes Wordfence can interfere with the bulk conversion of images - if you have any problems using the bulk converter, follow the steps below to tell Wordfence to let the conversion complete.</p>';
+                echo '<ul>';
+                    echo '<li>Go to the Wordfence Firewall settings page under Wordfence -> Firewall - or click <a href="' . get_admin_url( null, 'admin.php?page=WordfenceWAF&subpage=waf_options' ) . '" target="_blank">here</a> to open it in a new tab.</li>';
+                    echo '<li>Under the <strong>Web Application Firewall Status</strong> section, use the dropdown menu to put the firewall in \'Learning Mode\'.</li>';
+                    echo '<li>Run the Bulk Conversion below until it\'s completed.</li>';
+                    echo '<li>Back on the Wordfence Firewall settings page, set the <strong>Web Application Firewall Status</strong> back to \'Enabled and Protecting\'</li>';
+                echo '</ul>';
+            echo '</div>';
+        }
     }
 }
