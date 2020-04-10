@@ -3,7 +3,7 @@ Contributors: mikebricknellbarlow
 Donate link: https://paypal.me/mikebarlow1989
 Tags: pagespeed, webp, images, speed, conversion
 Requires at least: 5.0.0
-Tested up to: 5.3
+Tested up to: 5.4
 Requires PHP: 7.0
 Stable tag: trunk
 License: GPLv2 or later
@@ -49,6 +49,10 @@ e.g.
 Firstly, turn off the setting so that your site starts displaying correctly again. Then, send me a message describing the issue that you saw - I'll try to issue a fix and come back to you!
 
 == Changelog ==
+
+= 1.1.14 =
+* Bugfix - Preventing HTML entities from breaking in buffered content
+* Updating supported version
 
 = 1.1.13 =
 * Bugfix - Preventing conflict with Gutenberg, caused by plugin attempting to process json posted by Gutenberg using HTML buffering

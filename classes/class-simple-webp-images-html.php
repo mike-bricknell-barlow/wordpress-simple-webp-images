@@ -85,8 +85,9 @@ class Simple_Webp_Images_HTML {
             $img->parentNode->removeChild ( $img );
         
         }
-        
-        return str_replace( '<?xml encoding="utf-8" ?>', '', $post->saveHTML() );
+	
+	$new_content = str_replace( '<?xml encoding="utf-8" ?>', '', $post->saveHTML() );
+        return str_replace( '&amp;', '&', $new_content );        
     }
 
     private function get_all_image_sizes () {
