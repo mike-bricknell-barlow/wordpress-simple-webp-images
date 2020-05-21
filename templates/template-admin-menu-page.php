@@ -18,7 +18,7 @@
 
                                 <th><label for="<?php echo esc_html( $field['id'] ) ?>"><?php echo esc_html( $field['label'] ) ?></label></th>
                                 <td>
-                                    <input type="text" id="<?php echo esc_html( $field['id'] ) ?>" name="<?php echo esc_html( $field['id'] ) ?>" placeholder="80" value="<?php echo esc_html( $field['value'] ) ?>" />
+                                    <input type="text" id="<?php echo esc_html( $field['id'] ) ?>" name="<?php echo esc_html( $field['id'] ) ?>" placeholder="<?php echo esc_html( $field['placeholder'] ) ?>" value="<?php echo esc_html( $field['value'] ) ?>" />
                                     <?php if ( $field['description'] ): ?>
                                         <p><?php echo esc_html( $field['description'] ) ?></p>
                                     <?php endif; ?>
@@ -33,6 +33,28 @@
                                 <th><label for="<?php echo esc_html( $field['id'] ) ?>"><?php echo esc_html( $field['label'] ) ?></label></th>
                                 <td>
                                     <input type="checkbox" id="<?php echo esc_html( $field['id'] ) ?>" name="<?php echo esc_html( $field['id'] ) ?>" <?php echo ( $field['value'] == 'on' ) ? esc_html( 'checked="checked"' ) : '' ?> />
+                                    <?php if ( $field['description'] ): ?>
+                                        <p><?php echo esc_html( $field['description'] ) ?></p>
+                                    <?php endif; ?>
+                                </td>
+
+                                <?php
+                                break;
+
+                            case 'select': 
+                                ?>
+
+                                <th><label for="<?php echo esc_html( $field['id'] ) ?>"><?php echo esc_html( $field['label'] ) ?></label></th>
+                                <td>
+                                    <select multiple="multiple" style="width: 100%;" id="<?php echo esc_html( $field['id'] ) ?>" name="<?php echo esc_html( $field['id'] ) ?>[]">    
+                                        <option value=""></option>
+                                        <?php foreach( $all_pages as $a_p ): ?>
+                                            <?php $selected_string = ( in_array( $a_p->ID, $field['value'] ) ) ? 'selected="selected"' : ''; ?>
+                                            <option value="<?php echo $a_p->ID; ?>" <?php echo $selected_string; ?>>
+                                                <?php echo $a_p->post_title; ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select> 
                                     <?php if ( $field['description'] ): ?>
                                         <p><?php echo esc_html( $field['description'] ) ?></p>
                                     <?php endif; ?>

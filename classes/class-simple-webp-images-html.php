@@ -10,7 +10,7 @@ class Simple_Webp_Images_HTML {
 	    add_action( 'wp_enqueue_scripts', array ( $this, 'enqueue_assets' ) );
 
         add_filter( 'wp_get_attachment_image_attributes', array( $this, 'add_id_attribute_to_image_tags' ), 10, 3 );
-        add_filter( 'the_content', array ( $this, 'wrap_img_tags_with_picture_element' ), 20 );
+        //add_filter( 'the_content', array ( $this, 'wrap_img_tags_with_picture_element' ), 20 );
         add_filter( 'final_output', array ( $this, 'wrap_img_tags_with_picture_element' ) );
     }
 
@@ -86,7 +86,7 @@ class Simple_Webp_Images_HTML {
         
         }
 	
-	$new_content = str_replace( '<?xml encoding="utf-8" ?>', '', $post->saveHTML() );
+	    $new_content = str_replace( '<?xml encoding="utf-8" ?>', '', $post->saveHTML() );
         return str_replace( '&amp;', '&', $new_content );        
     }
 
@@ -158,6 +158,25 @@ class Simple_Webp_Images_HTML {
         return $size_string;
     }
 
+    private function is_excluded_from_lazy_loading( $classes ) {
+        $excluded_classes = get_option( 'simple-webp-images-excluded-lazy-loading' );
+
+        if( ! $excluded_classes ) {
+            return false;
+        }
+
+        $excluded_classes_array = array_filter( array_map( 'trim', explode( ',', $excluded_classes ) ) );
+        $img_classes_array = array_filter( array_map( 'trim', explode( ' ', $classes ) ) );
+
+        foreach( $img_classes_array as $img_class ) {
+            if( in_array( $img_class, $excluded_classes_array ) ) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
     private function generate_picture_element ( $img_tag, $src_set, $classes, $attachment_id ) {
 	    if ( ! $attachment_id ) {
             if ( strpos ( $classes, 'wp-image-' ) !== FALSE ) {
@@ -196,18 +215,19 @@ class Simple_Webp_Images_HTML {
             $img_tag = str_replace ( 'src', 'class="' . $classes . '" src', $img_tag );
         }
 
-            if ( $this->is_lazy_loading_enabled () ) {
-                $src_set_title = 'data-srcset';
-                $sizes_title = 'data-sizes';
+        if ( $this->is_lazy_loading_enabled () && ! $this->is_excluded_from_lazy_loading( $classes ) ) {
+            $src_set_title = 'data-srcset';
+            $sizes_title = 'data-sizes';
 
-                $img_tag = str_replace ( 'src', 'data-src', $img_tag );
-                $img_tag = str_replace ( 'class="', 'class="lazy ', $img_tag );
+            $img_tag = str_replace ( 'src', 'data-src', $img_tag );
+            $img_tag = str_replace ( 'class="', 'class="lazy ', $img_tag );
 
             if ( strpos ( 'class', $img_tag ) === FALSE ) {
-            $img_tag = str_replace ( 'data-src', 'class="lazy" data-src', $img_tag );
+                $img_tag = str_replace ( 'data-src', 'class="lazy" data-src', $img_tag );
             }
+            
             $classes .= ' lazy';
-            }
+        }
 
         $new_img_tag = '<picture>';
         
@@ -255,6 +275,12 @@ class Simple_Webp_Images_HTML {
     }
 
     private function is_output_buffering_enabled () {
+        $excluded_pages = get_option( 'simple-webp-images-excluded-html-ob' );
+
+        if( is_array( $excluded_pages ) && in_array( get_the_id(), $excluded_pages ) ) {
+            return false;
+        }
+
         if ( get_option ( 'simple-webp-images-output-buffering' ) == 'on' ) {
             return true;
         }

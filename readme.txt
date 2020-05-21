@@ -40,15 +40,24 @@ e.g.
 
 * HTML Output Buffering - This allows the plugin to perform a find-and-replace on the HTML that WordPress has generated for output to the browser to replace image tags. This tends to perform the image tag replacement more reliably, but can cause issues with some themes. Users are advised to have this setting turned on, but they should check that the site is displaying as it should, and turn this option off if any issues arise.
 
+* Exclude pages from HTML output buffering - To specify pages that should be excluded from the HTML Output Buffering settings
+
 * Lazy loading - This improves the site speed further by not loading images that are further down the page until the user has scrolled down to them. This saves time downloading images that the user hasn't got to yet, or might not get to at all. Users are advised to have this setting turned on, but they should check that the site is displaying as it should, and turn this option off if any issues arise.
+
+* Exclude image classes from lazy-loading - To specify images, by class name, that should not have the lazy-loading applied
 
 == Frequently Asked Questions ==
 
 = My site doesn't display correctly with HTML Output Buffering turned on - what should I do? =
 
-Firstly, turn off the setting so that your site starts displaying correctly again. Then, send me a message describing the issue that you saw - I'll try to issue a fix and come back to you!
+If certain pages don't display correctly, but the rest of the site does, exclude the problem pages from the output buffering on the plugin settings page, under Settings -> Simple Webp Images. 
+If it's the majority of the site that doesn't display correctly, turn off the setting and send me a message describing the issue that you saw - I'll try to issue a fix and come back to you!
 
 == Changelog ==
+
+= 1.1.15 =
+* Feature - Allowing lazy-loading to be disabled for specified image classes
+* Feature - Allowing HTML Output Buffering to be disabled for specified pages
 
 = 1.1.14 =
 * Bugfix - Preventing HTML entities from breaking in buffered content
