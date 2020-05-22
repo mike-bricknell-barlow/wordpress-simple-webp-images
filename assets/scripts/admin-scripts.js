@@ -2,7 +2,7 @@
     $( document ).ready( function () {
         window.ajaxrunning = false;
 
-        $( 'select' ).selectric();
+        $( '#simple-webp-images-excluded-html-ob' ).selectric();
 
         if($('body').hasClass('post-type-attachment')) { 
             onLoadElements();

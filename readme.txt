@@ -55,6 +55,9 @@ If it's the majority of the site that doesn't display correctly, turn off the se
 
 == Changelog ==
 
+= 1.1.16 =
+* Bugfix - Preventing select box styling on admin page affecting entire WordPress dashboard
+
 = 1.1.15 =
 * Feature - Allowing lazy-loading to be disabled for specified image classes
 * Feature - Allowing HTML Output Buffering to be disabled for specified pages
