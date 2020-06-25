@@ -55,6 +55,9 @@ If it's the majority of the site that doesn't display correctly, turn off the se
 
 == Changelog ==
 
+= 1.1.17 =
+* Bugfix - Preventing HTML output buffering from affecting XML sitemaps, such as those produced by Yoast SEO
+
 = 1.1.16 =
 * Bugfix - Preventing select box styling on admin page affecting entire WordPress dashboard
 

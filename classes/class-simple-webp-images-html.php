@@ -10,7 +10,7 @@ class Simple_Webp_Images_HTML {
 	    add_action( 'wp_enqueue_scripts', array ( $this, 'enqueue_assets' ) );
 
         add_filter( 'wp_get_attachment_image_attributes', array( $this, 'add_id_attribute_to_image_tags' ), 10, 3 );
-        //add_filter( 'the_content', array ( $this, 'wrap_img_tags_with_picture_element' ), 20 );
+        add_filter( 'the_content', array ( $this, 'wrap_img_tags_with_picture_element' ), 20 );
         add_filter( 'final_output', array ( $this, 'wrap_img_tags_with_picture_element' ) );
     }
 
@@ -22,6 +22,15 @@ class Simple_Webp_Images_HTML {
     private function is_HTML( $string ) {
         if( $string != strip_tags( $string ) ) {
             return true;
+        } else {
+            return false;
+        }
+    }
+
+    private function is_xml( $string ) {
+        $doc = @simplexml_load_string( $string );
+        if ($doc) {
+            return true; 
         } else {
             return false;
         }
@@ -39,6 +48,11 @@ class Simple_Webp_Images_HTML {
 
         if( wp_doing_ajax() ) {
             // Processing HTML generated in ajax requests can break functionality - skip these
+            return false;
+        }
+
+        if( $this->is_xml( $content ) ) {
+            // If string is XML, don't try to process it
             return false;
         }
 
