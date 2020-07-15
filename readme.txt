@@ -46,6 +46,42 @@ e.g.
 
 * Exclude image classes from lazy-loading - To specify images, by class name, that should not have the lazy-loading applied
 
+== Developers ==
+
+If using Simple Webp Images with your custom themes or plugins, there's a couple of filters you can use, as below.
+
+= `simple-webp-images-exclude-from-output-buffering` filter
+
+Use this to exclude pages or posts from the HTML output buffering via `apply_filters`, using any critera you need. Call the filter, run any checks you need, and return 'true' to exclude the current page or post from the buffering.
+Example:
+
+apply_filters( 'simple-webp-images-exclude-from-output-buffering', 'exclude_page_with_id_100_from_output_buffering' );
+function exclude_page_with_id_100_from_output_buffering( $is_excluded ) {
+    if( get_the_id() == 100 ) {
+        return true;
+    }
+
+    return false;
+}
+
+The example code could be placed in your `functions.php` file.
+
+= `simple-webp-images-exclude-from-lazy-loading` filter
+
+Use this to exclude pages or posts from the image lazy loading via `apply_filters`, using any critera you need. Call the filter, run any checks you need, and return 'true' to exclude the current page or post from the lazy loading.
+Example:
+
+apply_filters( 'simple-webp-images-exclude-from-lazy-loading', 'exclude_page_with_id_100_from_lazy_loading' );
+function exclude_page_with_id_100_from_lazy_loading( $is_excluded ) {
+    if( get_the_id() == 100 ) {
+        return true;
+    }
+
+    return false;
+}
+
+The example code could be placed in your `functions.php` file.
+
 == Frequently Asked Questions ==
 
 = My site doesn't display correctly with HTML Output Buffering turned on - what should I do? =
@@ -54,6 +90,11 @@ If certain pages don't display correctly, but the rest of the site does, exclude
 If it's the majority of the site that doesn't display correctly, turn off the setting and send me a message describing the issue that you saw - I'll try to issue a fix and come back to you!
 
 == Changelog ==
+= 1.2.0 =
+* Feature - Allowing exclusion from HTML output buffering and image lazy loading via apply_filters
+
+= 1.1.18 =
+* Bugfix - Getting attachment ID from image URL if no other attachment ID is found
 
 = 1.1.17 =
 * Bugfix - Preventing HTML output buffering from affecting XML sitemaps, such as those produced by Yoast SEO

@@ -88,13 +88,14 @@ class Simple_Webp_Images_HTML {
 
             if ( 
                 strpos ( $img->getAttribute ( 'src' ), '.jpg' ) === FALSE &&
+                strpos ( $img->getAttribute ( 'src' ), '.jpeg' ) === FALSE &&
                 strpos ( $img->getAttribute ( 'src' ), '.png' ) === FALSE 
                 ) {
                 continue;
             }
             
             $elem = $post->createElement( 'span' );
-            $this->appendHTML($elem, $this->generate_picture_element ( $post->saveHTML( $img ), $img->getAttribute ( 'srcset' ), $img->getAttribute ( 'class' ), $img->getAttribute ( 'data-attachmentid' ) ) );
+            $this->appendHTML($elem, $this->generate_picture_element ( $post->saveHTML( $img ), $img->getAttribute ( 'srcset' ), $img->getAttribute ( 'class' ), $img->getAttribute ( 'data-attachmentid' ), $img->getAttribute ( 'src' ) ) );
             $img->parentNode->insertBefore ( $elem, $img ); 
             $img->parentNode->removeChild ( $img );
         
@@ -191,7 +192,7 @@ class Simple_Webp_Images_HTML {
         return false;
     }
 
-    private function generate_picture_element ( $img_tag, $src_set, $classes, $attachment_id ) {
+    private function generate_picture_element ( $img_tag, $src_set, $classes, $attachment_id, $src = false ) {
 	    if ( ! $attachment_id ) {
             if ( strpos ( $classes, 'wp-image-' ) !== FALSE ) {
                 $ids = array();
@@ -200,18 +201,31 @@ class Simple_Webp_Images_HTML {
                     $attachment_id = $ids[1][0];
                 }
             }
-        }      
+        }    
+        
+        if( ! $attachment_id ) {
+            $src_arr = explode( '/', $src );
+            $filename = array_pop( $src_arr );
+
+            $maybe_attachment_id = $this->wp_get_attachment_by_file_name( $filename );
+
+            if( $maybe_attachment_id ) {
+                $attachment_id = $maybe_attachment_id;
+            }
+        }
 
         $src_set = $this->generate_src_set ( $attachment_id );
             $size_string = $this->generate_sizes_string ( $src_set );
             
             $webp_src_set = $src_set;
             $webp_src_set = str_replace ( '.jpg', '.jpg.webp', $webp_src_set );
+            $webp_src_set = str_replace ( '.jpeg', '.jpeg.webp', $webp_src_set );
             $webp_src_set = str_replace ( '.png', '.png.webp', $webp_src_set );
 
             $img_type = false;
             switch ( $img_tag ) {
                 case strpos ( $img_tag, '.jpg' ) !== FALSE:
+                case strpos ( $img_tag, '.jpeg' ) !== FALSE:
                     $img_type = 'image/jpg';
                     break;
 
@@ -281,6 +295,10 @@ class Simple_Webp_Images_HTML {
     }
 
     private function is_lazy_loading_enabled () {
+        if( apply_filters( 'simple-webp-images-exclude-from-lazy-loading', false ) ) {
+            return false;
+        }
+        
         if ( get_option ( 'simple-webp-images-lazy-loading' ) == 'on' ) {
             return true;
         }
@@ -295,11 +313,27 @@ class Simple_Webp_Images_HTML {
             return false;
         }
 
+        if( apply_filters( 'simple-webp-images-exclude-from-output-buffering', false ) ) {
+            return false;
+        }
+
         if ( get_option ( 'simple-webp-images-output-buffering' ) == 'on' ) {
             return true;
         }
 
         return false;
+    }
+
+    private function wp_get_attachment_by_file_name( $filename ) {
+        global $wpdb;
+        $query = "SELECT DISTINCT `post_id` FROM " . $wpdb->postmeta . " WHERE `meta_key` = '_wp_attached_file' AND `meta_value` LIKE '%" . esc_sql( $filename ) . "%'";
+        $results = $wpdb->get_results( $query );
+
+        if( ! $results ) {
+            return false;
+        }
+
+        return $results[0]->post_id;
     }
 }
 
