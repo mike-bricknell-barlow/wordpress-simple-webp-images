@@ -101,6 +101,19 @@ class Simple_Webp_Images {
             $this->generate_webp( $filepath, $mime_type );
         }
 
+        if( ! $mime_type ) {
+            switch ( $attachment_meta['file'] ) {
+                case strpos ( $attachment_meta['file'], '.jpg' ) !== FALSE:
+                case strpos ( $attachment_meta['file'], '.jpeg' ) !== FALSE:
+                    $mime_type = 'image/jpeg';
+                    break;
+    
+                case strpos ( $attachment_meta['file'], '.png' ) !== FALSE:
+                    $mime_type = 'image/png';
+                    break;
+            }
+        }
+
         $created = $this->generate_webp( wp_get_upload_dir()['basedir'] . DIRECTORY_SEPARATOR . $attachment_meta['file'], $mime_type );
         return $created;
     }

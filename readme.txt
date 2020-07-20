@@ -50,11 +50,12 @@ e.g.
 
 If using Simple Webp Images with your custom themes or plugins, there's a couple of filters you can use, as below.
 
-= `simple-webp-images-exclude-from-output-buffering` filter
+* `simple-webp-images-exclude-from-output-buffering` filter
 
 Use this to exclude pages or posts from the HTML output buffering via `apply_filters`, using any critera you need. Call the filter, run any checks you need, and return 'true' to exclude the current page or post from the buffering.
 Example:
 
+`
 apply_filters( 'simple-webp-images-exclude-from-output-buffering', 'exclude_page_with_id_100_from_output_buffering' );
 function exclude_page_with_id_100_from_output_buffering( $is_excluded ) {
     if( get_the_id() == 100 ) {
@@ -63,14 +64,16 @@ function exclude_page_with_id_100_from_output_buffering( $is_excluded ) {
 
     return false;
 }
+`
 
 The example code could be placed in your `functions.php` file.
 
-= `simple-webp-images-exclude-from-lazy-loading` filter
+* `simple-webp-images-exclude-from-lazy-loading` filter
 
 Use this to exclude pages or posts from the image lazy loading via `apply_filters`, using any critera you need. Call the filter, run any checks you need, and return 'true' to exclude the current page or post from the lazy loading.
 Example:
 
+`
 apply_filters( 'simple-webp-images-exclude-from-lazy-loading', 'exclude_page_with_id_100_from_lazy_loading' );
 function exclude_page_with_id_100_from_lazy_loading( $is_excluded ) {
     if( get_the_id() == 100 ) {
@@ -79,6 +82,7 @@ function exclude_page_with_id_100_from_lazy_loading( $is_excluded ) {
 
     return false;
 }
+`
 
 The example code could be placed in your `functions.php` file.
 
@@ -90,6 +94,9 @@ If certain pages don't display correctly, but the rest of the site does, exclude
 If it's the majority of the site that doesn't display correctly, turn off the setting and send me a message describing the issue that you saw - I'll try to issue a fix and come back to you!
 
 == Changelog ==
+= 1.2.1 =
+* Bugfix - Allowing webp images to be generated when small enough that no sized versions are generated
+
 = 1.2.0 =
 * Feature - Allowing exclusion from HTML output buffering and image lazy loading via apply_filters
 
