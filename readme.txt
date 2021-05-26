@@ -3,7 +3,7 @@ Contributors: mikebricknellbarlow
 Donate link: https://paypal.me/mikebarlow1989
 Tags: pagespeed, webp, images, speed, conversion
 Requires at least: 5.0.0
-Tested up to: 5.5
+Tested up to: 5.7
 Requires PHP: 7.0
 Stable tag: trunk
 License: GPLv2 or later
