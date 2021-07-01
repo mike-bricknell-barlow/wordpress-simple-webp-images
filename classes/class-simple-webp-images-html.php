@@ -127,7 +127,7 @@ class Simple_Webp_Images_HTML {
         return $sizes;
     }
 
-    private function generate_src_set ( $attachment_id, $sizes = array() ) {  
+    private function generate_source_elements ( $attachment_id, $sizes = array() ) {  
         if ( empty ( $sizes ) ) {
             $sizes = $this->get_all_image_sizes();
         }
@@ -148,8 +148,29 @@ class Simple_Webp_Images_HTML {
             return false;
         }
 
+        usort( $sources, function ( $a, $b ) {
+            return $b[1] - $a[1];
+        } );
+
         foreach ( $sources as $source ) {
-            $src_set .= $source[0] . ' ' . $source[1] . 'w, ';
+            $filename = $source[0];
+            $webp_filename = str_replace ( '.jpg', '.jpg.webp', $filename );
+            $webp_filename = str_replace ( '.jpeg', '.jpeg.webp', $webp_filename );
+            $webp_filename = str_replace ( '.png', '.png.webp', $webp_filename );
+            
+            // Webp version
+            $src_set .= sprintf(
+                '<source media="%s" srcset="%s">',
+                '(min-width:' . ( $source[1] - 100 ) . 'px)',
+                $webp_filename
+            );
+
+            // Standard version for older browsers
+            $src_set .= sprintf(
+                '<source media="%s" srcset="%s">',
+                '(min-width:' . ( $source[1] - 100 ) . 'px)',
+                $filename
+            );
         }
 
         if ( strpos ( $src_set, 'http' ) === FALSE ) {
@@ -157,20 +178,6 @@ class Simple_Webp_Images_HTML {
         }
 
         return $src_set;
-    }
-
-    private function generate_sizes_string ( $src_set ) {
-        $sizes = array();
-        preg_match_all ( '/(\d{1,12})w/', $src_set, $sizes );
-        sort ( $sizes[1] );
-
-        $size_string = '';
-        foreach ( $sizes[1] as $size ) {
-            $size_string .= ' ( max-width: ' . $size .  'px ) ' . $size .  'px,';
-        }
-
-        $size_string = trim ( $size_string, ',' );
-        return $size_string;
     }
 
     private function is_excluded_from_lazy_loading( $classes ) {
@@ -214,28 +221,7 @@ class Simple_Webp_Images_HTML {
             }
         }
 
-        $src_set = $this->generate_src_set ( $attachment_id );
-            $size_string = $this->generate_sizes_string ( $src_set );
-            
-            $webp_src_set = $src_set;
-            $webp_src_set = str_replace ( '.jpg', '.jpg.webp', $webp_src_set );
-            $webp_src_set = str_replace ( '.jpeg', '.jpeg.webp', $webp_src_set );
-            $webp_src_set = str_replace ( '.png', '.png.webp', $webp_src_set );
-
-            $img_type = false;
-            switch ( $img_tag ) {
-                case strpos ( $img_tag, '.jpg' ) !== FALSE:
-                case strpos ( $img_tag, '.jpeg' ) !== FALSE:
-                    $img_type = 'image/jpg';
-                    break;
-
-                case strpos ( $img_tag, '.png' ) !== FALSE:
-                    $img_type = 'image/png';
-                    break;
-            }
-
-            $src_set_title = 'srcset';
-            $sizes_title = 'sizes';
+        $source_elements = $this->generate_source_elements( $attachment_id );
 
         $img_tag = str_replace ( 'class="', 'class=" ' . $classes, $img_tag );
 
@@ -243,32 +229,26 @@ class Simple_Webp_Images_HTML {
             $img_tag = str_replace ( 'src', 'class="' . $classes . '" src', $img_tag );
         }
 
+        $new_img_tag = sprintf(
+            '<picture>
+                %s
+                %s
+            </picture>',
+            $source_elements,
+            $img_tag
+        );
+
         if ( $this->is_lazy_loading_enabled () && ! $this->is_excluded_from_lazy_loading( $classes ) ) {
-            $src_set_title = 'data-srcset';
-            $sizes_title = 'data-sizes';
+            $new_img_tag = str_replace ( 'src', 'data-src', $new_img_tag );
+            $new_img_tag = str_replace ( 'srcset', 'data-srcset', $new_img_tag );
+            $new_img_tag = str_replace ( 'class="', 'class="lazy ', $new_img_tag );
 
-            $img_tag = str_replace ( 'src', 'data-src', $img_tag );
-            $img_tag = str_replace ( 'class="', 'class="lazy ', $img_tag );
-
-            if ( strpos ( 'class', $img_tag ) === FALSE ) {
-                $img_tag = str_replace ( 'data-src', 'class="lazy" data-src', $img_tag );
+            if ( strpos ( 'class', $new_img_tag ) === FALSE ) {
+                $new_img_tag = str_replace ( 'data-src', 'class="lazy" data-src', $new_img_tag );
             }
             
             $classes .= ' lazy';
         }
-
-        $new_img_tag = '<picture>';
-        
-        if ( $webp_src_set ) {
-            $new_img_tag .= '<source ' . $src_set_title . '="' . $webp_src_set . '" ' . $sizes_title . '="' . $size_string . '" type="image/webp">';
-        }
-
-        if ( $img_type && $src_set ) {
-            $new_img_tag .= '<source ' . $src_set_title . '="' . $src_set . '" ' . $sizes_title . '="' . $size_string . '" type="' . $img_type . '">';
-        }
-            
-        $new_img_tag .= $img_tag;
-        $new_img_tag .= '</picture>';
 
         return $new_img_tag;
     }

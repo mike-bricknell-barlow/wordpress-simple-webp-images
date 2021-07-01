@@ -94,6 +94,9 @@ If certain pages don't display correctly, but the rest of the site does, exclude
 If it's the majority of the site that doesn't display correctly, turn off the setting and send me a message describing the issue that you saw - I'll try to issue a fix and come back to you!
 
 == Changelog ==
+= 1.3.0 =
+* Feature - *POTENTIALLY BREAKING CHANGES* - Rewriting <picture> element generation to improve efficiency, moving all sized images to separate <source> elements
+
 = 1.2.1 =
 * Bugfix - Allowing webp images to be generated when small enough that no sized versions are generated
 
