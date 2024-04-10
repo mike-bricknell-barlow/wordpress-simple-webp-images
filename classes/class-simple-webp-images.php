@@ -38,7 +38,7 @@ class Simple_Webp_Images
 
         $this->generate_webp(
             File::get_filepath($metadata['file']),
-            $metadata['sizes'][0]['mime-type']
+            $metadata['sizes'][array_key_first($metadata['sizes'])]['mime-type']
         );
         
         return $metadata;
@@ -114,7 +114,7 @@ class Simple_Webp_Images
 
         return $this->generate_webp(
             File::get_filepath($attachment_meta['file']),
-            $attachment_meta['sizes'][0]['mime-type']
+            $attachment_meta['sizes'][array_key_first($attachment_meta['sizes'])]['mime-type']
         );
     }
 }
