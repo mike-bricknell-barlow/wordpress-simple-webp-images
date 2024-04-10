@@ -1,0 +1,15 @@
+{
+    "name": "mike-bricknell-barlow/simple-webp-images",
+    "license": "GPLv2",
+    "authors": [
+        {
+            "name": "Mike Bricknell-Barlow",
+            "email": "mike@bricknellbarlow.co.uk"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "SWI\\Includes\\": "includes/"
+        }
+    }
+}
