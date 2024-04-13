@@ -37,4 +37,9 @@ class Options
     {
         return get_option('simple-webp-images-excluded-html-ob') ?: [];
     }
+
+    public static function get_lazy_loading_excluded_classes(): string
+    {
+        return get_option('simple-webp-images-excluded-lazy-loading') ?: '';
+    }
 }
