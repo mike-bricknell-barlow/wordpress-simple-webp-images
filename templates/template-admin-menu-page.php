@@ -1,26 +1,26 @@
 <div class="wrap">
     <h1>Simple Webp Images - Settings</h1>
 
-    <?php do_action( 'show_pre_plugin_messages' ) ?>
+    <?php do_action('show_pre_plugin_messages') ?>
 
-    <form method="post" action="<?php echo admin_url ( 'admin-post.php' ) ?>"> 
-        <?php settings_fields( 'simple-webp-images-options-group' ); ?>
+    <form method="post" action="<?php echo admin_url ('admin-post.php') ?>"> 
+        <?php settings_fields('simple-webp-images-options-group'); ?>
         <input type="hidden" name="action" value="update_settings">
         <table class="form-table">
             <tbody>
                 <?php 
                 
-                foreach ( $fields as $field ) {
+                foreach ($args['fields'] as $field) {
                     echo '<tr>';
-                        switch ( $field['type'] ) {
+                        switch ($field['type']) {
                             case 'text':
                                 ?>
 
-                                <th><label for="<?php echo esc_html( $field['id'] ) ?>"><?php echo esc_html( $field['label'] ) ?></label></th>
+                                <th><label for="<?php echo esc_html($field['id']) ?>"><?php echo esc_html($field['label']) ?></label></th>
                                 <td>
-                                    <input type="text" id="<?php echo esc_html( $field['id'] ) ?>" name="<?php echo esc_html( $field['id'] ) ?>" placeholder="<?php echo esc_html( $field['placeholder'] ) ?>" value="<?php echo esc_html( $field['value'] ) ?>" />
-                                    <?php if ( $field['description'] ): ?>
-                                        <p><?php echo esc_html( $field['description'] ) ?></p>
+                                    <input type="text" id="<?php echo esc_html($field['id']) ?>" name="<?php echo esc_html($field['id']) ?>" placeholder="<?php echo esc_html($field['placeholder']) ?>" value="<?php echo esc_html($field['value']) ?>" />
+                                    <?php if ($field['description']): ?>
+                                        <p><?php echo esc_html($field['description']) ?></p>
                                     <?php endif; ?>
                                 </td>
 
@@ -30,11 +30,11 @@
                             case 'checkbox':
                                 ?>
 
-                                <th><label for="<?php echo esc_html( $field['id'] ) ?>"><?php echo esc_html( $field['label'] ) ?></label></th>
+                                <th><label for="<?php echo esc_html($field['id']) ?>"><?php echo esc_html($field['label']) ?></label></th>
                                 <td>
-                                    <input type="checkbox" id="<?php echo esc_html( $field['id'] ) ?>" name="<?php echo esc_html( $field['id'] ) ?>" <?php echo ( $field['value'] == 'on' ) ? esc_html( 'checked="checked"' ) : '' ?> />
-                                    <?php if ( $field['description'] ): ?>
-                                        <p><?php echo esc_html( $field['description'] ) ?></p>
+                                    <input type="checkbox" id="<?php echo esc_html($field['id']) ?>" name="<?php echo esc_html($field['id']) ?>" <?php echo ($field['value'] == 'on') ? esc_html('checked="checked"') : '' ?> />
+                                    <?php if ($field['description']): ?>
+                                        <p><?php echo esc_html($field['description']) ?></p>
                                     <?php endif; ?>
                                 </td>
 
@@ -44,19 +44,19 @@
                             case 'select': 
                                 ?>
 
-                                <th><label for="<?php echo esc_html( $field['id'] ) ?>"><?php echo esc_html( $field['label'] ) ?></label></th>
+                                <th><label for="<?php echo esc_html($field['id']) ?>"><?php echo esc_html($field['label']) ?></label></th>
                                 <td>
-                                    <select multiple="multiple" style="width: 100%;" id="<?php echo esc_html( $field['id'] ) ?>" name="<?php echo esc_html( $field['id'] ) ?>[]">    
+                                    <select multiple="multiple" style="width: 100%;" id="<?php echo esc_html($field['id']) ?>" name="<?php echo esc_html($field['id']) ?>[]">    
                                         <option value=""></option>
-                                        <?php foreach( $all_pages as $a_p ): ?>
-                                            <?php $selected_string = ( in_array( $a_p->ID, $field['value'] ) ) ? 'selected="selected"' : ''; ?>
+                                        <?php foreach($all_pages as $a_p): ?>
+                                            <?php $selected_string = (in_array($a_p->ID, $field['value'])) ? 'selected="selected"' : ''; ?>
                                             <option value="<?php echo $a_p->ID; ?>" <?php echo $selected_string; ?>>
                                                 <?php echo $a_p->post_title; ?>
                                             </option>
                                         <?php endforeach; ?>
                                     </select> 
-                                    <?php if ( $field['description'] ): ?>
-                                        <p><?php echo esc_html( $field['description'] ) ?></p>
+                                    <?php if ($field['description']): ?>
+                                        <p><?php echo esc_html($field['description']) ?></p>
                                     <?php endif; ?>
                                 </td>
 
