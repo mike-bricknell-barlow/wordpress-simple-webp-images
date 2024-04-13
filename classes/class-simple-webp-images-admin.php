@@ -35,7 +35,7 @@ class Simple_Webp_Images_Admin {
             'simple-webp-images-admin-scripts',
             $this->get_plugin_url() . 'dist/scripts/admin-scripts.js',
             ['simple-webp-images-selectric'],
-            $this->version
+            filemtime(SIMPLE_WEBP_IMAGES_PLUGIN_DIR_PATH . 'dist/scripts/admin-scripts.js'),
         );
 
         wp_enqueue_style(
@@ -49,7 +49,7 @@ class Simple_Webp_Images_Admin {
             'simple-webp-images-admin-styles',
             $this->get_plugin_url() . 'dist/styles/admin-styles.css',
             [],
-            $this->version
+            filemtime(SIMPLE_WEBP_IMAGES_PLUGIN_DIR_PATH . 'dist/styles/admin-styles.css')
         );
     }
 
