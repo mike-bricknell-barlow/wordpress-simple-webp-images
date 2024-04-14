@@ -4,223 +4,260 @@ class Simple_Webp_Images_Admin {
     private $version = SIMPLE_WEBP_IMAGES_VERSION;
     private $plugin_url;
     
-    function __construct () {
-        $this->hooks_and_filters();
+    function __construct ()
+    {
+        add_action('init', [$this, 'set_plugin_url']);
+        add_action('admin_menu', [$this, 'register_admin_menu_page']);
+        add_action('register_settings', [$this, 'register_admin_menu_page']);
+        add_action('admin_post_update_settings', [$this, 'update_settings']);
+        add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
+        add_action('wp_ajax_get_total_images', [$this, 'get_all_images']);
+        add_action('wp_ajax_bulk_convert_images', [$this, 'bulk_convert_images']);
+        add_action('show_pre_plugin_messages', [$this, 'display_wordfence_message']);
+        add_action('show_pre_plugin_messages', [$this, 'display_gd_extension_message']);
     }
 
-    public function set_plugin_url () {
+    public function set_plugin_url(): void
+    {
         $this->plugin_url = SIMPLE_WEBP_IMAGES_PLUGIN_DIR_URL;
     }
 
-    public function get_plugin_url () {
+    public function get_plugin_url(): string
+    {
         return $this->plugin_url;
     }
 
-    private function hooks_and_filters () {
-        add_action( 'init', array( $this, 'set_plugin_url' ) );
-        add_action( 'admin_menu', array( $this, 'register_admin_menu_page' ) );
-        add_action( 'register_settings', array( $this, 'register_admin_menu_page' ) );
-        add_action( 'admin_post_update_settings', array( $this, 'update_settings' ) );
-        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
-        add_action( 'wp_ajax_get_total_images', array( $this, 'get_all_images' ) );
-        add_action( 'wp_ajax_bulk_convert_images', array( $this, 'bulk_convert_images' ) );
-        add_action( 'show_pre_plugin_messages', array( $this, 'display_wordfence_message' ) );
-    }
-
-    public function enqueue_admin_assets () {
+    public function enqueue_admin_assets(): void
+    {
         wp_enqueue_script (
             'simple-webp-images-selectric',
             $this->get_plugin_url() . 'dist/scripts/selectric.js',
-            array( 'jquery' ),
+            ['jquery'],
             $this->version
         );
         
         wp_enqueue_script (
             'simple-webp-images-admin-scripts',
             $this->get_plugin_url() . 'dist/scripts/admin-scripts.js',
-            array( 'simple-webp-images-selectric' ),
-            $this->version
+            ['simple-webp-images-selectric'],
+            filemtime(SIMPLE_WEBP_IMAGES_PLUGIN_DIR_PATH . 'dist/scripts/admin-scripts.js'),
         );
 
         wp_enqueue_style(
             'simple-webp-images-selectric',
             $this->get_plugin_url() . 'dist/styles/selectric.css',
-            array(),
+            [],
             $this->version
         );
 
         wp_enqueue_style(
             'simple-webp-images-admin-styles',
             $this->get_plugin_url() . 'dist/styles/admin-styles.css',
-            array(),
-            $this->version
+            [],
+            filemtime(SIMPLE_WEBP_IMAGES_PLUGIN_DIR_PATH . 'dist/styles/admin-styles.css')
         );
     }
 
-    public function register_admin_menu_page () {
+    public function register_admin_menu_page(): void
+    {
         add_submenu_page(
             'options-general.php',
             'Simple Webp Images',
             'Simple Webp Images',
             'manage_options',
             'simple-webp-images',
-            array ( $this, 'display_admin_menu_page' )
+            [$this, 'display_admin_menu_page']
         );
     }
 
-    public function display_admin_menu_page () {
+    public function display_admin_menu_page(): void
+    {
         $fields = $this->get_options_fields();
         $all_pages = $this->get_all_pages_for_exclusion_field();
-        include SIMPLE_WEBP_IMAGES_PLUGIN_DIR_PATH . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'template-admin-menu-page.php';
+        load_template(
+            sprintf(
+                '%s%stemplates%stemplate-admin-menu-page.php',
+                SIMPLE_WEBP_IMAGES_PLUGIN_DIR_PATH,
+                DIRECTORY_SEPARATOR,
+                DIRECTORY_SEPARATOR
+            ),
+            false,
+            [
+                'fields' => $fields,
+                'all_pages' => $all_pages
+            ],
+        );
     }
 
-    public function register_settings () {
+    public function register_settings(): void
+    {
         $fields = $this->get_options_fields();
         $option_group = 'simple-webp-images-options-group';
         
-        foreach ( $fields as $field ) {
+        foreach ($fields as $field) {
             register_setting (
                 $option_group,
                 $field['id'],
-                array ()
+                []
             );
         }
     }
 
-    private function get_options_fields () {
-        return array (
-            array ( 
+    private function get_options_fields(): array
+    {
+        return [
+            [
                 'label' => 'Conversion Quality (%)',
                 'type' => 'text',
                 'id' => 'simple-webp-images-conversion-quality',
-                'value' => get_option ( 'simple-webp-images-conversion-quality' ),
+                'value' => get_option('simple-webp-images-conversion-quality'),
                 'description' => '',
                 'placeholder' => '80',
-            ),
-            array ( 
+            ],
+            [
                 'label' => 'Enable HTML Output Buffering',
                 'type' => 'checkbox',
                 'id' => 'simple-webp-images-output-buffering',
-                'value' => get_option ( 'simple-webp-images-output-buffering' ),
+                'value' => get_option('simple-webp-images-output-buffering'),
                 'placeholder' => '',
                 'description' => 'HTML Output Buffering means that the final page content generated by WordPress is then scanned through by the plugin, and normal img tags replaced with picture tags for Webp images. This option may mean that some images that weren\'t being converted on the site will be, but it can cause issues with some themes. It\'s recommended to have this turned on, but if it causes issues, turn it off.',
-            ),
-            array (
+            ],
+            [
                 'label' => 'Exclude pages from HTML output buffering',
                 'type' => 'select',
                 'id' => 'simple-webp-images-excluded-html-ob',
-                'value' => get_option ( 'simple-webp-images-excluded-html-ob' ),
+                'value' => get_option('simple-webp-images-excluded-html-ob'),
                 'placeholder' => '',
                 'description' => 'If any pages need to be excluded from the HTML output buffering, select them here. You can select as many as you need to.',
-            ),
-            array ( 
+            ],
+            [ 
                 'label' => 'Enable Lazy-Loading',
                 'type' => 'checkbox',
                 'id' => 'simple-webp-images-lazy-loading',
-                'value' => get_option ( 'simple-webp-images-lazy-loading' ),
+                'value' => get_option('simple-webp-images-lazy-loading'),
                 'placeholder' => '',
                 'description' => '',
-            ),
-            array (
+            ],
+            [
                 'label' => 'Exclude image classes from lazy-loading',
                 'type' => 'text',
                 'id' => 'simple-webp-images-excluded-lazy-loading',
-                'value' => get_option ( 'simple-webp-images-excluded-lazy-loading' ),
+                'value' => get_option('simple-webp-images-excluded-lazy-loading'),
                 'placeholder' => 'e.g. Class-1, Class-2',
                 'description' => 'If any images need to be excluded from the lazy loading functionality, enter the names of the classes here. Separate multiple classes with a comma.',
-            ),
-        );
+            ],
+        ];
     }
 
-    public function update_settings () {
+    public function update_settings(): void
+    {
         $fields = $this->get_options_fields();
 
-        foreach ( $fields as $field ) {
+        foreach ($fields as $field ) {
             $field_id = false;
             
-            if( isset( $_POST[$field['id']] ) ) {
-                if( is_array( $_POST[$field['id']] ) ) {
-                    $field_id = array_map( 'sanitize_text_field', $_POST[$field['id']] );
+            if (isset($_POST[$field['id']])) {
+                if (is_array($_POST[$field['id']])) {
+                    $field_id = array_map('sanitize_text_field', $_POST[$field['id']]);
                 } else {
-                    $field_id = sanitize_text_field( $_POST[$field['id']] );
+                    $field_id = sanitize_text_field($_POST[$field['id']]);
                 }
             }
             
-            if ( $field_id ) {
-                update_option( $field['id'], $field_id );
+            if ($field_id) {
+                update_option($field['id'], $field_id);
             } else {
-                if ( $field['type'] == 'checkbox' ) {
-                    update_option( $field['id'], 'off' );
+                if ($field['type'] == 'checkbox') {
+                    update_option($field['id'], 'off');
                 } 
     
-                if ( $field['type'] == 'text' || $field['type'] == 'select' ) {
-                    update_option( $field['id'], '' );
+                if ($field['type'] == 'text' || $field['type'] == 'select') {
+                    update_option($field['id'], '');
                 }
             }
         }
 
-        wp_redirect( get_admin_url( null, 'options-general.php?page=simple-webp-images' ) );
+        wp_redirect(
+            get_admin_url(null, 'options-general.php?page=simple-webp-images')
+        );
         exit();
     }
 
-    public function get_all_images () {
+    public function get_all_images(): void
+    {
         $total_images = $this->get_count_of_images();
-        echo esc_html( $total_images );
-        wp_die();
+        wp_send_json_success([
+            'image_count' => $total_images,
+        ], 200);
+        exit();
     }
 
-    private function get_count_of_images () {
-        $attachment_query = new WP_Query ( array (
+    private function get_count_of_images(): int
+    {
+        $attachment_query = new WP_Query([
             'post_type' => 'attachment',
             'posts_per_page' => -1,
             'fields' => 'ids',
             'post_status' => 'inherit',
-        ) );
+        ]);
 
-        $total_images = $attachment_query->found_posts;
-        return $total_images;
+        return absint($attachment_query->found_posts);
     }
 
-    private function get_images_paged ( $paged ) {
-        $attachment_query = new WP_Query ( array (
+    private function get_images_paged (int $paged): array
+    {
+        $attachment_query = new WP_Query([
             'post_type' => 'attachment',
             'posts_per_page' => 10,
             'fields' => 'ids',
             'post_status' => 'inherit',
             'paged' => $paged,
-        ) );
+        ]);
 
         return $attachment_query->get_posts();
     }
 
-    public function bulk_convert_images () {
-        $paged = intval( $_POST['paged'] );
-        $images = $this->get_images_paged( $paged );
-
-        if( !$images ) {
-            echo esc_html( "All done" );
-            wp_die();
+    public function bulk_convert_images(): void
+    {
+        if (!isset($_POST['paged'])) {
+            wp_send_json_error([
+                'message' => 'Missing page number.',
+            ], 500);
+            exit();
         }
 
-        global $simple_webp_images;
+        $paged = absint($_POST['paged']);
+        $images = $this->get_images_paged($paged);
 
-        foreach ( $images as $image ) {
-            $simple_webp_images->convert_single_attachment_by_attachment_id( $image );
+        if (!$images) {
+            wp_send_json_error([
+                'message' => 'No images found.',
+            ], 500);
+            exit();
+        }
+
+        $handle = new Simple_Webp_Images();
+
+        foreach ($images as $image) {
+            $handle->convert_single_attachment_by_attachment_id($image);
         }
 
         $images_converted = $paged * 10;
 
-        echo esc_html( $images_converted );
-        wp_die();
+        wp_send_json_success([
+            'message' => $images_converted.' images converted.',
+        ], 200);
+        exit();
     }
 
-    public function display_wordfence_message () {
-        if( is_plugin_active( 'wordfence/wordfence.php' ) ) {
+    public function display_wordfence_message(): void
+    {
+        if (is_plugin_active('wordfence/wordfence.php')) {
             echo '<div class="simple-webp-images-messages">';
                 echo '<p>We\'ve noticed that you\'re using the Wordfence plugin on your website.</p>';
                 echo '<p>Sometimes Wordfence can interfere with the bulk conversion of images - if you have any problems using the bulk converter, follow the steps below to tell Wordfence to let the conversion complete.</p>';
                 echo '<ul>';
-                    echo '<li>Go to the Wordfence Firewall settings page under Wordfence -> Firewall - or click <a href="' . get_admin_url( null, 'admin.php?page=WordfenceWAF&subpage=waf_options' ) . '" target="_blank">here</a> to open it in a new tab.</li>';
+                    echo '<li>Go to the Wordfence Firewall settings page under Wordfence -> Firewall - or click <a href="' . get_admin_url(null, 'admin.php?page=WordfenceWAF&subpage=waf_options') . '" target="_blank">here</a> to open it in a new tab.</li>';
                     echo '<li>Under the <strong>Web Application Firewall Status</strong> section, use the dropdown menu to put the firewall in \'Learning Mode\'.</li>';
                     echo '<li>Run the Bulk Conversion below until it\'s completed.</li>';
                     echo '<li>Back on the Wordfence Firewall settings page, set the <strong>Web Application Firewall Status</strong> back to \'Enabled and Protecting\'</li>';
@@ -229,12 +266,25 @@ class Simple_Webp_Images_Admin {
         }
     }
 
-    public function get_all_pages_for_exclusion_field () {
-        $page_query = new WP_Query( array (
+    public function get_all_pages_for_exclusion_field(): array
+    {
+        $page_query = new WP_Query([
             'post_type' => 'page',
             'posts_per_page' => '-1',
-        ) );
+        ]);
 
         return $page_query->get_posts();
+    }
+
+    public function display_gd_extension_message(): void
+    {
+        if (extension_loaded('gd') && function_exists('gd_info')) {
+            return;
+        }
+
+        echo '<div class="simple-webp-images-messages">';
+        echo '<p>Your PHP installation is missing the GD image extension. This means that Simple Webp Images will not work on your site.</p>';
+        echo '<p>To resolve this, reach out to your hosting provider and ask them to enable the PHP GD extension.</p>';
+        echo '</div>';
     }
 }

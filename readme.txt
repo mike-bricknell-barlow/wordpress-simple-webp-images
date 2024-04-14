@@ -3,8 +3,8 @@ Contributors: mikebricknellbarlow
 Donate link: https://paypal.me/mikebarlow1989
 Tags: pagespeed, webp, images, speed, conversion
 Requires at least: 5.0.0
-Tested up to: 5.7
-Requires PHP: 7.0
+Tested up to: 6.5
+Requires PHP: 8.0
 Stable tag: trunk
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -94,8 +94,13 @@ If certain pages don't display correctly, but the rest of the site does, exclude
 If it's the majority of the site that doesn't display correctly, turn off the setting and send me a message describing the issue that you saw - I'll try to issue a fix and come back to you!
 
 == Changelog ==
+= 2.0.0 =
+* Rewriting to make use of new language features
+* More efficient HTML replacement
+* PHP 8 required
+
 = 1.3.0 =
-* Feature - *POTENTIALLY BREAKING CHANGES* - Rewriting <picture> element generation to improve efficiency, moving all sized images to separate <source> elements
+* Feature - Rewriting <picture> element generation to improve efficiency, moving all sized images to separate <source> elements
 
 = 1.2.1 =
 * Bugfix - Allowing webp images to be generated when small enough that no sized versions are generated

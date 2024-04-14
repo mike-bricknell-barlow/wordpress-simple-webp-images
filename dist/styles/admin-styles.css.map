@@ -1,7 +1,1 @@
-{
-"version": 3,
-"mappings": "AAAA,KAAM,CACF,WAAW,CAAE,IAAI,CACjB,UAAU,CAAE,MAAM,CAGtB,4BAA6B,CACzB,UAAU,CAAC,IAAI,CACf,MAAM,CAAE,iBAAiB,CACzB,iBAAiB,CAAE,OAAkB,CACrC,iBAAiB,CAAE,GAAG,CACtB,iBAAiB,CAAE,GAAG,CACtB,UAAU,CAAE,0BAAyB,CACrC,MAAM,CAAE,YAAY,CACpB,OAAO,CAAE,QAAQ,CAEjB,+BAAG,CACC,UAAU,CAAE,iBAAiB,CAC7B,OAAO,CAAE,MAAM",
-"sources": ["../../assets/styles/admin-styles.scss"],
-"names": [],
-"file": "admin-styles.css"
-}
+{"version":3,"sourceRoot":"","sources":["../../assets/styles/admin-styles.scss"],"names":[],"mappings":"AAAA,MACI,iBACA,kBAGJ,6BACI,gBACA,yBACA,0BACA,sBACA,sBACA,qCACA,oBACA,iBAEA,gCACI,6BACA","file":"admin-styles.css"}
