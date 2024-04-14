@@ -31,14 +31,14 @@ class Simple_Webp_Images
     {
         foreach($metadata['sizes'] as $size) {
             $this->generate_webp(
-                File::get_filepath_sized($metadata['file'], $size),
-                $size['mime-type']
+                File::get_filepath_sized($metadata['file'], $size) ?: '',
+                $size['mime-type'] ?: ''
             );
         }
 
         $this->generate_webp(
-            File::get_filepath($metadata['file']),
-            $metadata['sizes'][array_key_first($metadata['sizes'])]['mime-type']
+            File::get_filepath($metadata['file']) ?: '',
+            $metadata['sizes'][array_key_first($metadata['sizes'])]['mime-type'] ?: ''
         );
         
         return $metadata;
@@ -46,6 +46,10 @@ class Simple_Webp_Images
 
     private function generate_webp(string $filename, string $filetype): bool
     {
+        if ($filename == '' || $filetype == '') {
+            return false;
+        }
+
         $handle = false;
 
         switch ($filetype) {
@@ -70,7 +74,7 @@ class Simple_Webp_Images
         $attachment_meta = get_post_meta($post_id, '_wp_attachment_metadata', true);
         foreach($attachment_meta['sizes'] as $size) {
             File::delete(
-                File::get_filepath_sized($attachment_meta['file'], $size)
+                File::get_filepath_sized($attachment_meta['file'], $size).'.webp'
             );
         }
 
@@ -107,14 +111,14 @@ class Simple_Webp_Images
 
         foreach($attachment_meta['sizes'] as $size) {
             $this->generate_webp(
-                File::get_filepath_sized($attachment_meta['file'], $size),
-                $size['mime-type']
+                File::get_filepath_sized($attachment_meta['file'], $size) ?: '',
+                $size['mime-type'] ?: ''
             );
         }
 
         return $this->generate_webp(
-            File::get_filepath($attachment_meta['file']),
-            $attachment_meta['sizes'][array_key_first($attachment_meta['sizes'])]['mime-type']
+            File::get_filepath($attachment_meta['file']) ?: '',
+            $attachment_meta['sizes'][array_key_first($attachment_meta['sizes'])]['mime-type'] ?: ''
         );
     }
 }
