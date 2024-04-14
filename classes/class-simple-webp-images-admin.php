@@ -4,7 +4,8 @@ class Simple_Webp_Images_Admin {
     private $version = SIMPLE_WEBP_IMAGES_VERSION;
     private $plugin_url;
     
-    function __construct () {
+    function __construct ()
+    {
         add_action('init', [$this, 'set_plugin_url']);
         add_action('admin_menu', [$this, 'register_admin_menu_page']);
         add_action('register_settings', [$this, 'register_admin_menu_page']);
@@ -13,17 +14,21 @@ class Simple_Webp_Images_Admin {
         add_action('wp_ajax_get_total_images', [$this, 'get_all_images']);
         add_action('wp_ajax_bulk_convert_images', [$this, 'bulk_convert_images']);
         add_action('show_pre_plugin_messages', [$this, 'display_wordfence_message']);
+        add_action('show_pre_plugin_messages', [$this, 'display_gd_extension_message']);
     }
 
-    public function set_plugin_url(): void {
+    public function set_plugin_url(): void
+    {
         $this->plugin_url = SIMPLE_WEBP_IMAGES_PLUGIN_DIR_URL;
     }
 
-    public function get_plugin_url(): string {
+    public function get_plugin_url(): string
+    {
         return $this->plugin_url;
     }
 
-    public function enqueue_admin_assets(): void {
+    public function enqueue_admin_assets(): void
+    {
         wp_enqueue_script (
             'simple-webp-images-selectric',
             $this->get_plugin_url() . 'dist/scripts/selectric.js',
@@ -53,7 +58,8 @@ class Simple_Webp_Images_Admin {
         );
     }
 
-    public function register_admin_menu_page(): void {
+    public function register_admin_menu_page(): void
+    {
         add_submenu_page(
             'options-general.php',
             'Simple Webp Images',
@@ -64,7 +70,8 @@ class Simple_Webp_Images_Admin {
         );
     }
 
-    public function display_admin_menu_page(): void {
+    public function display_admin_menu_page(): void
+    {
         $fields = $this->get_options_fields();
         $all_pages = $this->get_all_pages_for_exclusion_field();
         load_template(
@@ -82,7 +89,8 @@ class Simple_Webp_Images_Admin {
         );
     }
 
-    public function register_settings(): void {
+    public function register_settings(): void
+    {
         $fields = $this->get_options_fields();
         $option_group = 'simple-webp-images-options-group';
         
@@ -95,7 +103,8 @@ class Simple_Webp_Images_Admin {
         }
     }
 
-    private function get_options_fields(): array {
+    private function get_options_fields(): array
+    {
         return [
             [
                 'label' => 'Conversion Quality (%)',
@@ -140,7 +149,8 @@ class Simple_Webp_Images_Admin {
         ];
     }
 
-    public function update_settings(): void {
+    public function update_settings(): void
+    {
         $fields = $this->get_options_fields();
 
         foreach ($fields as $field ) {
@@ -173,7 +183,8 @@ class Simple_Webp_Images_Admin {
         exit();
     }
 
-    public function get_all_images(): void {
+    public function get_all_images(): void
+    {
         $total_images = $this->get_count_of_images();
         wp_send_json_success([
             'image_count' => $total_images,
@@ -181,7 +192,8 @@ class Simple_Webp_Images_Admin {
         exit();
     }
 
-    private function get_count_of_images(): int {
+    private function get_count_of_images(): int
+    {
         $attachment_query = new WP_Query([
             'post_type' => 'attachment',
             'posts_per_page' => -1,
@@ -192,7 +204,8 @@ class Simple_Webp_Images_Admin {
         return absint($attachment_query->found_posts);
     }
 
-    private function get_images_paged (int $paged): array {
+    private function get_images_paged (int $paged): array
+    {
         $attachment_query = new WP_Query([
             'post_type' => 'attachment',
             'posts_per_page' => 10,
@@ -204,7 +217,8 @@ class Simple_Webp_Images_Admin {
         return $attachment_query->get_posts();
     }
 
-    public function bulk_convert_images() {
+    public function bulk_convert_images(): void
+    {
         if (!isset($_POST['paged'])) {
             wp_send_json_error([
                 'message' => 'Missing page number.',
@@ -236,7 +250,8 @@ class Simple_Webp_Images_Admin {
         exit();
     }
 
-    public function display_wordfence_message() {
+    public function display_wordfence_message(): void
+    {
         if (is_plugin_active('wordfence/wordfence.php')) {
             echo '<div class="simple-webp-images-messages">';
                 echo '<p>We\'ve noticed that you\'re using the Wordfence plugin on your website.</p>';
@@ -251,12 +266,25 @@ class Simple_Webp_Images_Admin {
         }
     }
 
-    public function get_all_pages_for_exclusion_field() {
+    public function get_all_pages_for_exclusion_field(): array
+    {
         $page_query = new WP_Query([
             'post_type' => 'page',
             'posts_per_page' => '-1',
         ]);
 
         return $page_query->get_posts();
+    }
+
+    public function display_gd_extension_message(): void
+    {
+        if (extension_loaded('gd') && function_exists('gd_info')) {
+            return;
+        }
+
+        echo '<div class="simple-webp-images-messages">';
+        echo '<p>Your PHP installation is missing the GD image extension. This means that Simple Webp Images will not work on your site.</p>';
+        echo '<p>To resolve this, reach out to your hosting provider and ask them to enable the PHP GD extension.</p>';
+        echo '</div>';
     }
 }
